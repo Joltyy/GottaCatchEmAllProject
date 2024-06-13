@@ -397,6 +397,10 @@ void PlayScene::OnKeyDown(int keyCode) {
 				player->ActivateSkill1();
 			}
 			break;
+		case ALLEGRO_KEY_LSHIFT:
+			if(player->energy > 0 && !player->isSprinting){
+				player->isSprinting = true;
+			}
     }
 }
 
@@ -412,6 +416,8 @@ void PlayScene::OnKeyUp(int keyCode) {
 			break;
 		case ALLEGRO_KEY_1: 
 			player->isUsingSkill1 = false; break;
+		case ALLEGRO_KEY_LSHIFT:
+			player->isSprinting = false;
     }
 }
 

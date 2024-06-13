@@ -62,6 +62,15 @@ void Player::Update(float deltaTime) {
         maxExp = maxExp * 1.2;
     }
 
+    //PlayerSprinting
+    if(isSprinting && energy > 0){
+        speed = 100.0f;
+        energy -= 0.1;
+    } else {
+        isSprinting = false;
+        speed = 60.0f;
+    }
+
     //Basic attack cooldown
     if(isOnCooldown) {
         cooldownTimer += deltaTime;

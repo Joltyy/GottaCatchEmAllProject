@@ -55,6 +55,8 @@ public:
     int Intligence = 1;
     int Endurance = 1;
 
+    bool isSprinting = false;
+
     //Basic attack variables
     int attackDamage = 2;
     float angle;
