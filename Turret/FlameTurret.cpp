@@ -12,7 +12,7 @@
 
 const int FlameTurret::Price = 300;
 FlameTurret::FlameTurret(float x, float y) :
-	Turret("play/tower-base.png", "play/turret-7.png", x, y, 500, Price, 2.0, 100, 30) {
+	Turret("play/tower-base.png", "play/turret-7.png", x, y, 500, Price, 2.0, 100, 30, 1) {
 	// Move center downward, since we the turret head is slightly biased upward.
 	//Anchor.y += 8.0f / GetBitmapHeight();
 }
@@ -42,8 +42,8 @@ for (auto& it : enemies) {
 		Engine::Point normal = Engine::Point(-normalized.y, normalized.x);
 
 		// Create a bullet for each enemy
-		getPlayScene()->BulletGroup->AddNewObject(new FlameBullet(Position + normalized * 36 - normal * 6, diff, rotation, this));
-		getPlayScene()->BulletGroup->AddNewObject(new FlameBullet(Position + normalized * 36 + normal * 6, diff, rotation, this));
+		getPlayScene()->BulletGroup->AddNewObject(new FlameBullet(Position + normalized * 36 - normal * 6, diff, rotation, this, damage));
+		getPlayScene()->BulletGroup->AddNewObject(new FlameBullet(Position + normalized * 36 + normal * 6, diff, rotation, this, damage));
 	}
 }
 
