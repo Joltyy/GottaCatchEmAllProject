@@ -42,6 +42,8 @@ Player::Player(float x, float y) : position(x, y), upPressed(false), downPressed
     PlayerImageAttackRight = al_load_bitmap("Resource/images/Animations/Player_Right_Attack2.png");
 
     prevBitmap = PlayerImageDown;
+    this->SkillPoints = 0;
+    this->maxEnergy = 100 + ((Endurance - 1) * 10);
 }
 
 void Player::Update(float deltaTime) {
@@ -60,6 +62,7 @@ void Player::Update(float deltaTime) {
         SkillPoints += 1;
         Exp -= maxExp;
         maxExp = maxExp * 1.2;
+
     }
 
     //PlayerSprinting
@@ -137,6 +140,7 @@ void Player::Update(float deltaTime) {
         playScene->playerEnergy->Text = "Energy: " + std::to_string((int)energy);
         playScene->playerExp->Text = "Exp: " + std::to_string(Exp) + "/" + std::to_string(maxExp);
         playScene->playerLevel->Text = "Level: " + std::to_string(PlayerLevel);
+        playScene->playerSkillPoint->Text = "Skill Points: " + std::to_string(SkillPoints);
     }
 }
 
@@ -261,4 +265,10 @@ void Player::ActivateSkill1() {
         auto* projectile = new Skill1(position, velocity, rotation, Skill1Damage, Skill1Lifetime);
         Engine::GameEngine::GetInstance().GetActiveScene()->AddNewObject(projectile);
     }
+}
+
+void Player::updateStats(){
+    maxEnergy = 100 + ((Endurance - 1) * 10);
+    attackDamage = 2 + Strength;
+    energyRegenRate = 0.5 + (Intelligence * 0.1);
 }
