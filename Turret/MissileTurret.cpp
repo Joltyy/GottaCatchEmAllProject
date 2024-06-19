@@ -11,7 +11,7 @@
 
 const int MissileTurret::Price = 300;
 MissileTurret::MissileTurret(float x, float y) :
-	Turret("play/tower-base.png", "play/turret-3.png", x, y, 1000, Price, 4, 100) {
+	Turret("play/tower-base.png", "play/turret-3.png", x, y, 1000, Price, 4, 100, 4, 35) {
 }
 void MissileTurret::CreateBullet() {
 	Engine::Point diff = Engine::Point(cos(Rotation - ALLEGRO_PI / 2), sin(Rotation - ALLEGRO_PI / 2));
@@ -19,7 +19,7 @@ void MissileTurret::CreateBullet() {
 	Engine::Point normalized = diff.Normalize();
 	Engine::Point normal = Engine::Point(-normalized.y, normalized.x);
 	// Change bullet position to the front of the gun barrel.
-	getPlayScene()->BulletGroup->AddNewObject(new MissileBullet(Position + normalized * 10 - normal * 6, diff, rotation, this));
-	getPlayScene()->BulletGroup->AddNewObject(new MissileBullet(Position + normalized * 10 + normal * 6, diff, rotation, this));
+	getPlayScene()->BulletGroup->AddNewObject(new MissileBullet(Position + normalized * 10 - normal * 6, diff, rotation, this, damage));
+	getPlayScene()->BulletGroup->AddNewObject(new MissileBullet(Position + normalized * 10 + normal * 6, diff, rotation, this, damage));
 	AudioHelper::PlayAudio("missile.wav");
 }

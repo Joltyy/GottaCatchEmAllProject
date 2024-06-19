@@ -40,9 +40,10 @@ void Turret::OnExplode() {
 		getPlayScene()->GroundEffectGroup->AddNewObject(new DirtyEffect("play/dirty-" + std::to_string(distId(rng)) + ".png", dist(rng), Position.x, Position.y));
 	}
 }
-Turret::Turret(std::string imgBase, std::string imgTurret, float x, float y, float radius, int price, float coolDown, float hp) :
-	Sprite(imgTurret, x, y), price(price), coolDown(coolDown), imgBase(imgBase, x, y), hp(hp) {
+Turret::Turret(std::string imgBase, std::string imgTurret, float x, float y, float radius, int price, float coolDown, float hp, int damage, float box) :
+	Sprite(imgTurret, x, y), price(price), coolDown(coolDown), imgBase(imgBase, x, y), hp(hp), damage(damage) {
 	CollisionRadius = radius;
+	hitbox = box;
 }
 
 void Turret::Hit(float damage) {
@@ -64,7 +65,7 @@ void Turret::Update(float deltaTime) {
 		return;
 	if (Target) {
 		Engine::Point diff = Target->Position - Position;
-		if (diff.Magnitude() > CollisionRadius) {
+		if (diff.Magnitude() > CollisionRadius || diff.Magnitude() > hitbox) {
 			Target->lockedTurrets.erase(lockedTurretIterator);
 			Target = nullptr;
 			lockedTurretIterator = std::list<Turret*>::iterator();
@@ -76,7 +77,7 @@ void Turret::Update(float deltaTime) {
 		// However simply loop through all enemies is enough for this program.
 		for (auto& it : scene->EnemyGroup->GetObjects()) {
 			Engine::Point diff = it->Position - Position;
-			if (diff.Magnitude() <= CollisionRadius) {
+			if (diff.Magnitude() <= CollisionRadius || diff.Magnitude() <= hitbox) {
 				Target = dynamic_cast<Enemy*>(it);
 				Target->lockedTurrets.push_back(this);
 				lockedTurretIterator = std::prev(Target->lockedTurrets.end());
@@ -108,16 +109,37 @@ void Turret::Update(float deltaTime) {
 			CreateBullet();
 		}
 	}
+    // Existing update logic...
+
+    // Check for collisions with enemies.
+    for (auto& it : scene->EnemyGroup->GetObjects()) {
+        Engine::Point diff = it->Position - Position;
+        if (diff.Magnitude() <= hitbox) {
+            Enemy* enemy = dynamic_cast<Enemy*>(it);
+
+            // Calculate knockback direction.
+            Engine::Point knockbackDirection = diff.Normalize();
+
+            // Apply knockback to enemy position.
+            enemy->Position = enemy->Position + (knockbackDirection * knockbackDistance);
+
+            // Set enemy to knockback state if applicable.
+            enemy->isKnockback = true;
+            enemy->knockbackTimer = 0.3f; // Adjust knockback duration as needed.
+        }
+    }
 }
 void Turret::Draw() const {
 	if (Preview) {
 		al_draw_filled_circle(Position.x, Position.y, CollisionRadius, al_map_rgba(0, 255, 0, 50));
+		al_draw_filled_circle(Position.x, Position.y, hitbox, al_map_rgba(0, 50, 0, 50));
 	}
 	imgBase.Draw();
 	Sprite::Draw();
 	if (PlayScene::DebugMode) {
 		// Draw target radius.
 		al_draw_circle(Position.x, Position.y, CollisionRadius, al_map_rgb(0, 0, 255), 2);
+		al_draw_circle(Position.x, Position.y, hitbox, al_map_rgb(0, 0, 100), 2);
 	}
 }
 int Turret::GetPrice() const {

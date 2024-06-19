@@ -38,7 +38,6 @@ Enemy::Enemy(std::string img, float x, float y, float radius, float speed, float
 	reachEndTime = 0;
 }
 void Enemy::Hit(float damage) {
-	std::cout << hp << std::endl;
 	hp -= damage;
 	if (hp <= 0) {
 		OnExplode();
