@@ -12,7 +12,7 @@
 const int ShotgunTurret::Price = 100;
 ShotgunTurret::ShotgunTurret(float x, float y) :
 	// TODO: [CUSTOM-TOOL] You can imitate the 2 files: 'ShotgunTurret.hpp', 'ShotgunTurret.cpp' to create a new turret.
-	Turret("play/tower-base.png", "play/turret-5.png", x, y, 150, Price, 1.5, 100) {
+	Turret("play/tower-base.png", "play/turret-5.png", x, y, 150, Price, 1.5, 100, 1) {
 	// Move center downward, since we the turret head is slightly biased upward.
 	Anchor.y += 8.0f / GetBitmapHeight();
 }
@@ -27,7 +27,7 @@ void ShotgunTurret::CreateBullet() {
 	for (int i = -3; i <= 2; i++) {
         float newRotation = rotation + i * spread;
         Engine::Point newDiff = Engine::Point(cos(newRotation), sin(newRotation));
-        getPlayScene()->BulletGroup->AddNewObject(new FireBullet(Position + newDiff * 36, newDiff, newRotation, this));
+        getPlayScene()->BulletGroup->AddNewObject(new FireBullet(Position + newDiff * 36, newDiff, newRotation, this, damage));
     }
 
 	AudioHelper::PlayAudio("gun.wav");

@@ -244,6 +244,18 @@ void PlayScene::Update(float deltaTime) {
 		preview->Update(deltaTime);
 	}
 	player->Update(deltaTime);
+
+	for (auto turret : TowerGroup->GetObjects()) {
+		float mx = Engine::GameEngine::GetInstance().GetMousePosition().x;
+		float my = Engine::GameEngine::GetInstance().GetMousePosition().y;
+		if (mx >= turret->Position.x && mx <= turret->Position.x + 64 &&
+			my >= turret->Position.y && my <= turret->Position.y + 64) {
+			// Click is within turret bounds
+			std::cout << "Display upgrade\n";
+			DisplayUpgradeOptions(static_cast<Turret*>(turret));
+			break; // Assuming only one turret can be clicked at a time
+		}
+	}
 }
 void PlayScene::Draw() const {
 	al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -378,15 +390,6 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 
 			mapState[y][x] = TILE_OCCUPIED;
 			OnMouseMove(mx, my);
-		}
-	}
-
-	for (auto turret : TowerGroup->GetObjects()) {
-		if (mx >= turret->Position.x && mx <= turret->Position.x + 64 &&
-			my >= turret->Position.y && my <= turret->Position.y + 64) {
-			// Click is within turret bounds
-			DisplayUpgradeOptions(static_cast<Turret*>(turret));
-			break; // Assuming only one turret can be clicked at a time
 		}
 	}
 }
@@ -837,5 +840,6 @@ void PlayScene::DisplayUpgradeOptions(Turret* turret) {
 }
 
 void PlayScene::OnUpgradeTurret(Turret* turret) {
+	turret->damage *= 1.5;
 	return;
 }
