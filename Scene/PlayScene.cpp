@@ -380,6 +380,15 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 			OnMouseMove(mx, my);
 		}
 	}
+
+	for (auto turret : turretGroup) {
+        if (mx >= turret->GetPositionX() && mx <= turret->GetPositionX() + turret->GetWidth() &&
+            my >= turret->GetPositionY() && my <= turret->GetPositionY() + turret->GetHeight()) {
+            // Click is within turret bounds
+            DisplayUpgradeOptions(turret);
+            break; // Assuming only one turret can be clicked at a time
+        }
+    }
 }
 void PlayScene::OnKeyDown(int keyCode) {
 	IScene::OnKeyDown(keyCode);
