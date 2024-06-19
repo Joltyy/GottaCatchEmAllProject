@@ -35,7 +35,7 @@
 
 bool PlayScene::DebugMode = false;
 const std::vector<Engine::Point> PlayScene::directions = { Engine::Point(-1, 0), Engine::Point(0, -1), Engine::Point(1, 0), Engine::Point(0, 1) };
-const int PlayScene::MapWidth = 20, PlayScene::MapHeight = 13;
+const int PlayScene::MapWidth = 40, PlayScene::MapHeight = 26;
 const int PlayScene::BlockSize = 64;
 const float PlayScene::DangerTime = 7.61;
 // Define the spawn points
@@ -101,7 +101,7 @@ void PlayScene::Initialize() {
 	imgTarget = new Engine::Image("play/target.png", 0, 0);
 	imgTarget->Visible = false;
 	preview = nullptr;
-	UIGroup->AddNewObject(imgTarget);
+	TowerGroup->AddNewObject(imgTarget);
 	// Preload Lose Scene
 	deathBGMInstance = Engine::Resources::GetInstance().GetSampleInstance("astronomia.ogg");
 	Engine::Resources::GetInstance().GetBitmap("lose/benjamin-happy.png");
@@ -235,14 +235,36 @@ void PlayScene::Update(float deltaTime) {
 		enemy->Update(ticks);
 	}
 	if (preview) {
+		float centerX = (-player->position.x / 2.0) - 32;
+		float centerY = (-player->position.y / 2.0) - 32; 
 		preview->Position = Engine::GameEngine::GetInstance().GetMousePosition();
+		preview->Position.x -= centerX;
+		preview->Position.y -= centerY;
 		// To keep responding when paused.
 		preview->Update(deltaTime);
 	}
 	player->Update(deltaTime);
 }
 void PlayScene::Draw() const {
-	IScene::Draw();
+	al_clear_to_color(al_map_rgb(0, 0, 0));
+    
+    // Calculate the camera's center position based on the player's position
+	float centerX = (-player->position.x / 2.0) - 32;
+	float centerY = (-player->position.y / 2.0) - 32;
+
+    ALLEGRO_TRANSFORM camera;
+    al_identity_transform(&camera); // Reset the camera to the identity transformation.
+    al_translate_transform(&camera, centerX, centerY); // Move the camera to follow the player.
+    al_use_transform(&camera); // Apply the transformed camera to the drawing context.
+
+	//IScene::Draw();
+	TileMapGroup->Draw();
+	GroundEffectGroup->Draw();
+	DebugIndicatorGroup->Draw();
+	TowerGroup->Draw();
+	EnemyGroup->Draw();
+	BulletGroup->Draw();
+	EffectGroup->Draw();
 	player->Draw();
 	if (DebugMode) {
 		// Draw reverse BFS distance on all reachable blocks.
@@ -257,6 +279,12 @@ void PlayScene::Draw() const {
 			}
 		}
 	}
+
+	al_identity_transform(&camera); // Reset the camera to the identity transformation.
+    al_use_transform(&camera); // Apply the transformed camera to the drawing context.
+
+	UIGroup->Draw();
+
 
 	//Draw skill 1 icon
 	if(player->skill1CooldownTimer > 0)
@@ -291,13 +319,17 @@ void PlayScene::Draw() const {
 void PlayScene::OnMouseDown(int button, int mx, int my) {
 	if ((button & 1) && !imgTarget->Visible && preview) {
 		// Cancel turret construct.
-		UIGroup->RemoveObject(preview->GetObjectIterator());
+		TowerGroup->RemoveObject(preview->GetObjectIterator());
 		preview = nullptr;
 	}
 	IScene::OnMouseDown(button, mx, my);
 }
 void PlayScene::OnMouseMove(int mx, int my) {
 	IScene::OnMouseMove(mx, my);
+	float centerX = (-player->position.x / 2.0) - 32;
+	float centerY = (-player->position.y / 2.0) - 32;
+	int blockx = centerX / BlockSize;
+	int blocky = centerY / BlockSize;
 	const int x = mx / BlockSize;
 	const int y = my / BlockSize;
 	if (!preview || x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) {
@@ -305,15 +337,17 @@ void PlayScene::OnMouseMove(int mx, int my) {
 		return;
 	}
 	imgTarget->Visible = true;
-	imgTarget->Position.x = x * BlockSize;
-	imgTarget->Position.y = y * BlockSize;
+	imgTarget->Position.x = (x * BlockSize) - (blockx * BlockSize);
+	imgTarget->Position.y = (y * BlockSize) - (blocky * BlockSize);
 }
 void PlayScene::OnMouseUp(int button, int mx, int my) {
 	IScene::OnMouseUp(button, mx, my);
+	float centerX = (-player->position.x / 2.0) - 32;
+	float centerY = (-player->position.y / 2.0) - 32;
 	if (!imgTarget->Visible)
 		return;
-	const int x = mx / BlockSize;
-	const int y = my / BlockSize;
+	const int x = mx / BlockSize - (centerX / BlockSize);
+	const int y = my / BlockSize - (centerY / BlockSize);
 	if (button & 1) {
 		if (mapState[y][x] != TILE_OCCUPIED) {
 			if (!preview)
@@ -329,7 +363,7 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 			EarnMoney(-preview->GetPrice());
 			// Remove Preview.
 			preview->GetObjectIterator()->first = false;
-			UIGroup->RemoveObject(preview->GetObjectIterator());
+			TowerGroup->RemoveObject(preview->GetObjectIterator());
 			// Construct real turret.
 			preview->Position.x = x * BlockSize + BlockSize / 2;
 			preview->Position.y = y * BlockSize + BlockSize / 2;
@@ -612,7 +646,7 @@ void PlayScene::ConstructUI() {
 
 void PlayScene::UIBtnClicked(int id) {
 	if (preview)
-		UIGroup->RemoveObject(preview->GetObjectIterator());
+		TowerGroup->RemoveObject(preview->GetObjectIterator());
     // TODO: done [CUSTOM-TURRET]: On callback, create the turret.
 	if (id == 0 && money >= MachineGunTurret::Price)
 		preview = new MachineGunTurret(0, 0);
@@ -630,8 +664,14 @@ void PlayScene::UIBtnClicked(int id) {
 	preview->Tint = al_map_rgba(255, 255, 255, 200);
 	preview->Enabled = false;
 	preview->Preview = true;
-	UIGroup->AddNewObject(preview);
-	OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x, Engine::GameEngine::GetInstance().GetMousePosition().y);
+	TowerGroup->AddNewObject(preview);
+	float centerX = (-player->position.x / 2.0) - 32;
+	float centerY = (-player->position.y / 2.0) - 32;
+	preview->Position.x -= centerX;
+	preview->Position.y -= centerY;
+	std::cout << "preview x: " << preview->Position.x << " preview y: " << preview->Position.y << std::endl;
+	std::cout << "mouse x: " << Engine::GameEngine::GetInstance().GetMousePosition().x << " mouse y: " << Engine::GameEngine::GetInstance().GetMousePosition().y << std::endl;
+	OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x - centerX, Engine::GameEngine::GetInstance().GetMousePosition().y - centerY);
 }
 
 bool PlayScene::CheckSpaceValid(int x, int y) {
