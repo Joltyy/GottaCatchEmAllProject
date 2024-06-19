@@ -118,6 +118,8 @@ public:
 	void OnStrengthUpgradeClick();
 	void OnIntelligenceUpgradeClick();
 	void OnEnduranceUpgradeClick();
+	void DisplayUpgradeOptions(Turret* turret);
+	void OnUpgradeTurret(Turret* turret);
 	//Turret* getTurret(int id);
 	//void removeTurret(int id);
 	// void ModifyReadMapTiles();
