@@ -15,6 +15,7 @@
 #include "Engine/IScene.hpp"
 #include "Engine/LOG.hpp"
 #include "Scene/PlayScene.hpp"
+#include "Scene/PlayScene.hpp"
 #include "Turret/Turret.hpp"
 
 PlayScene* Enemy::getPlayScene() {
@@ -102,6 +103,7 @@ void Enemy::Update(float deltaTime) {
 		Engine::Point vec = target - Position;
 
 		
+			
     
 		// Add up the distances:
 		// 1. to path.back()

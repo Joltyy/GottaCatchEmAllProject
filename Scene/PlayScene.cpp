@@ -641,8 +641,6 @@ bool PlayScene::CheckSpaceValid(int x, int y) {
 	mapState[y][x] = TILE_OCCUPIED;
 	std::vector<std::vector<int>> map = CalculateBFSDistance();
 	mapState[y][x] = map00;
-	if (map[0][0] == -1)
-		return false;
 	for (auto& it : EnemyGroup->GetObjects()) {
 		Engine::Point pnt;
 		pnt.x = floor(it->Position.x / BlockSize);
@@ -651,9 +649,11 @@ bool PlayScene::CheckSpaceValid(int x, int y) {
 		if (pnt.x >= MapWidth) pnt.x = MapWidth - 1;
 		if (pnt.y < 0) pnt.y = 0;
 		if (pnt.y >= MapHeight) pnt.y = MapHeight - 1;
-		if (map[pnt.y][pnt.x] == -1)
-			return false;
+		// if (map[pnt.y][pnt.x] == -1)
+		// 	return false;
 	}
+	// if (map[0][0] == -1)
+	// 	return false;
 	// All enemy have path to exit.
 	mapState[y][x] = TILE_OCCUPIED;
 	mapDistance = map;
