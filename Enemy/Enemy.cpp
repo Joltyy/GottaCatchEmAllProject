@@ -88,6 +88,26 @@ void Enemy::UpdatePath(const std::vector<std::vector<int>>& mapDistance) {
 	path[0] = PlayScene::EndGridPoint;
 }
 void Enemy::Update(float deltaTime) {
+	// Get the nearest turret
+    Turret* nearestTurret = nullptr;
+    float minDistance = std::numeric_limits<float>::max();
+    for (auto& it : getPlayScene()->TowerGroup->GetObjects()) {
+        Turret* turret = dynamic_cast<Turret*>(it);
+        if (turret) {
+            float distance = (turret->Position - this->Position).Magnitude();
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestTurret = turret;
+            }
+        }
+    }
+
+    // If a turret is found and the distance is less than a certain value, stop
+    if (nearestTurret && minDistance < 5) { // Assuming the enemy stops if the turret is within 5 units
+		std::cout << "Turret found within 5 units distance." << std::endl;
+		return;
+	}
+
 	// Pre-calculate the velocity.
 	float remainSpeed = speed * deltaTime;
 	while (remainSpeed != 0) {
@@ -103,8 +123,6 @@ void Enemy::Update(float deltaTime) {
 		Engine::Point vec = target - Position;
 
 		
-			
-    
 		// Add up the distances:
 		// 1. to path.back()
 		// 2. path.back() to border
