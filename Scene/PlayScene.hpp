@@ -51,6 +51,7 @@ public:
 	Group* DebugIndicatorGroup;
 	Group* BulletGroup;
 	Group* TowerGroup;
+	Group* TurretGroup;
 	Group* EnemyGroup;
 	Group* EffectGroup;
 	Group* UIGroup;

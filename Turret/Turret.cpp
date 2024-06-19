@@ -2,6 +2,9 @@
 #include <allegro5/allegro_primitives.h>
 #include <cmath>
 #include <utility>
+#include <random>
+#include <string>
+#include <vector>
 
 #include "Enemy/Enemy.hpp"
 #include "Engine/GameEngine.hpp"
@@ -11,13 +14,46 @@
 #include "Scene/PlayScene.hpp"
 #include "Engine/Point.hpp"
 #include "Turret.hpp"
+#include "Engine/AudioHelper.hpp"
+#include "Bullet/Bullet.hpp"
+#include "UI/Animation/DirtyEffect.hpp"
+#include "UI/Animation/ExplosionEffect.hpp"
+#include "Engine/GameEngine.hpp"
+#include "Engine/Group.hpp"
+#include "Engine/IScene.hpp"
+#include "Engine/LOG.hpp"
+#include "Scene/PlayScene.hpp"
+#include "Turret/Turret.hpp"
 
 PlayScene* Turret::getPlayScene() {
 	return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());
 }
-Turret::Turret(std::string imgBase, std::string imgTurret, float x, float y, float radius, int price, float coolDown) :
-	Sprite(imgTurret, x, y), price(price), coolDown(coolDown), imgBase(imgBase, x, y) {
+
+void Turret::OnExplode() {
+	getPlayScene()->EffectGroup->AddNewObject(new ExplosionEffect(Position.x, Position.y));
+	std::random_device dev;
+	std::mt19937 rng(dev());
+	std::uniform_int_distribution<std::mt19937::result_type> distId(1, 3);
+	std::uniform_int_distribution<std::mt19937::result_type> dist(1, 20);
+	for (int i = 0; i < 10; i++) {
+		// Random add 10 dirty effects.
+		getPlayScene()->GroundEffectGroup->AddNewObject(new DirtyEffect("play/dirty-" + std::to_string(distId(rng)) + ".png", dist(rng), Position.x, Position.y));
+	}
+}
+Turret::Turret(std::string imgBase, std::string imgTurret, float x, float y, float radius, int price, float coolDown, float hp) :
+	Sprite(imgTurret, x, y), price(price), coolDown(coolDown), imgBase(imgBase, x, y), hp(hp) {
 	CollisionRadius = radius;
+}
+
+void Turret::Hit(float damage) {
+	std::cout << hp << std::endl;
+	hp -= damage;
+	if (hp <= 0) {
+		OnExplode();
+		getPlayScene()->EnemyGroup->RemoveObject(objectIterator);
+		
+		AudioHelper::PlayAudio("explosion.wav");
+	}
 }
 void Turret::Update(float deltaTime) {
 	Sprite::Update(deltaTime);
