@@ -12,7 +12,7 @@
 const int ShotgunTurret::Price = 100;
 ShotgunTurret::ShotgunTurret(float x, float y) :
 	// TODO: [CUSTOM-TOOL] You can imitate the 2 files: 'ShotgunTurret.hpp', 'ShotgunTurret.cpp' to create a new turret.
-	Turret("play/tower-base.png", "play/turret-5.png", x, y, 150, Price, 1.5, 100, 1, 30) {
+	Turret("play/tower-base.png", "play/turret-5.png", x, y, 150, Price, 1.5, 100, 1, 35) {
 	// Move center downward, since we the turret head is slightly biased upward.
 	Anchor.y += 8.0f / GetBitmapHeight();
 }

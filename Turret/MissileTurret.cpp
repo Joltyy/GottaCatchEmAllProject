@@ -11,8 +11,7 @@
 
 const int MissileTurret::Price = 300;
 MissileTurret::MissileTurret(float x, float y) :
-	Turret("play/tower-base.png", "play/turret-3.png", x, y, 1000, Price, 4, 100, 30) {
-	Turret("play/tower-base.png", "play/turret-3.png", x, y, 1000, Price, 4, 100, 4) {
+	Turret("play/tower-base.png", "play/turret-3.png", x, y, 1000, Price, 4, 100, 4, 35) {
 }
 void MissileTurret::CreateBullet() {
 	Engine::Point diff = Engine::Point(cos(Rotation - ALLEGRO_PI / 2), sin(Rotation - ALLEGRO_PI / 2));
