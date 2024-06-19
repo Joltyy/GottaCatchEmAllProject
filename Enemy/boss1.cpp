@@ -13,6 +13,8 @@ boss1::boss1(int x, int y)
     boss1_left = al_load_bitmap("Resource/images/Animations/giratina_left.png");
     boss1_down = al_load_bitmap("Resource/images/Animations/giratina_down.png");
     boss1_up = al_load_bitmap("Resource/images/Animations/giratina_up.png");
+
+    
 }
 
 void boss1::Update(float deltaTime) {
@@ -44,8 +46,8 @@ void boss1::Draw() const {
     // Calculate the new position based on the scale factor
     float scaledWidth = frameWidth * scaleFactor;
     float scaledHeight = frameHeight * scaleFactor;
-    float newPositionX = Position.x - (scaledWidth - frameWidth) / 2 - 40;
-    float newPositionY = Position.y - (scaledHeight - frameHeight) / 2 - 42;
+    float newPositionX = Position.x - (scaledWidth - frameWidth) / 2 - 36;
+    float newPositionY = Position.y - (scaledHeight - frameHeight) / 2 - 50;
 
     // Draw the current frame
     if(direction == 0)
