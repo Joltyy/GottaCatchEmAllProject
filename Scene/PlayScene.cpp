@@ -381,14 +381,14 @@ void PlayScene::OnMouseUp(int button, int mx, int my) {
 		}
 	}
 
-	for (auto turret : turretGroup) {
-        if (mx >= turret->GetPositionX() && mx <= turret->GetPositionX() + turret->GetWidth() &&
-            my >= turret->GetPositionY() && my <= turret->GetPositionY() + turret->GetHeight()) {
-            // Click is within turret bounds
-            DisplayUpgradeOptions(turret);
-            break; // Assuming only one turret can be clicked at a time
-        }
-    }
+	for (auto turret : TowerGroup->GetObjects()) {
+		if (mx >= turret->Position.x && mx <= turret->Position.x + 64 &&
+			my >= turret->Position.y && my <= turret->Position.y + 64) {
+			// Click is within turret bounds
+			DisplayUpgradeOptions(static_cast<Turret*>(turret));
+			break; // Assuming only one turret can be clicked at a time
+		}
+	}
 }
 void PlayScene::OnKeyDown(int keyCode) {
 	IScene::OnKeyDown(keyCode);
@@ -828,4 +828,14 @@ void PlayScene::OnEnduranceUpgradeClick() {
 
 void PlayScene::EarnExp(int exp){
 	player->Exp += exp;
+}
+
+void PlayScene::DisplayUpgradeOptions(Turret* turret) {
+	Engine::ImageButton* upgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", turret->Position.x, turret->Position.y - 20);
+	upgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnUpgradeTurret, this, turret));
+	TowerGroup->AddNewControlObject(upgradeButton);
+}
+
+void PlayScene::OnUpgradeTurret(Turret* turret) {
+	return;
 }
