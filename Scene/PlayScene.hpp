@@ -45,6 +45,11 @@ public:
 	int MapId;
 	float ticks;
 	float deathCountDown;
+
+	// // camera
+	// float centerX = 0;
+	// float centerY = 0;
+
 	// Map tiles.
 	Group* TileMapGroup;
 	Group* GroundEffectGroup;

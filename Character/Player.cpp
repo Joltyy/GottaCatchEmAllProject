@@ -263,7 +263,8 @@ void Player::ActivateSkill1() {
         float rotation = atan2(direction.y, direction.x) * (180 / M_PI);
         Engine::Point velocity = direction * skill1ProjectileSpeed;
         auto* projectile = new Skill1(position, velocity, rotation, Skill1Damage, Skill1Lifetime);
-        Engine::GameEngine::GetInstance().GetActiveScene()->AddNewObject(projectile);
+        PlayScene* scene = dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());
+        scene->BulletGroup->AddNewObject(projectile);
     }
 }
 
