@@ -64,12 +64,18 @@ public:
 	Engine::Label* playerExp;
 	Engine::Label* playerLevel;
 	Engine::Label* playerSkillPoint;
+	Engine::Label* playerStrength;
+	Engine::Label* playerIntelligence;
+	Engine::Label* playerEndurance;
 
 	//skill1 stats
 	Engine::Label* Skill1LevelLabel;
 
 	//image button
 	Engine::ImageButton* skill1UpgradeButton;
+	Engine::ImageButton* strengthUpgradeButton;
+	Engine::ImageButton* intelligenceUpgradeButton;
+	Engine::ImageButton* enduranceUpgradeButton;
 
 	Engine::Image* imgTarget;
 	Engine::Sprite* dangerIndicator;
@@ -103,6 +109,9 @@ public:
 	bool isRemoving = false;
 	void GenerateEdgePoints();
 	void OnSkill1UpgradeClick();
+	void OnStrengthUpgradeClick();
+	void OnIntelligenceUpgradeClick();
+	void OnEnduranceUpgradeClick();
 	//Turret* getTurret(int id);
 	//void removeTurret(int id);
 	// void ModifyReadMapTiles();

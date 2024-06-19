@@ -273,10 +273,19 @@ void PlayScene::Draw() const {
     }
 
 	//Draw upgrade button
-	if(player->SkillPoints <= 0 || player->skill1Level >= 3){
+	if(player->SkillPoints <= 0){
+		playerSkillPoint->Visible = false;
 		skill1UpgradeButton->Visible = false;
+		strengthUpgradeButton->Visible = false;
+		intelligenceUpgradeButton->Visible = false;
+		enduranceUpgradeButton->Visible = false;
 	} else {
-		skill1UpgradeButton->Visible = true;
+		if(player->skill1Level < 3) skill1UpgradeButton->Visible = true;
+		else skill1UpgradeButton->Visible = false;
+		strengthUpgradeButton->Visible = true;
+		intelligenceUpgradeButton->Visible = true;
+		enduranceUpgradeButton->Visible = true;
+		playerSkillPoint->Visible = true;
 	}
 }
 void PlayScene::OnMouseDown(int button, int mx, int my) {
@@ -559,14 +568,46 @@ void PlayScene::ConstructUI() {
     UIGroup->AddNewObject(Skill1LevelLabel);
 
 	//Player's Energy level
-	playerEnergy = new Engine::Label("Energy: " + std::to_string(player->energy), "pirulen.ttf", 24, 1297, 400, 0, 0, 255, 255, 0, 0);
+	playerEnergy = new Engine::Label("Energy: " + std::to_string(player->energy), "pirulen.ttf", 24, 1297, 325, 0, 0, 255, 255, 0, 0);
 	UIGroup->AddNewObject(playerEnergy);
 
 	//Players's level and exp
-	playerLevel = new Engine::Label("Level: " + std::to_string(player->PlayerLevel), "pirulen.ttf", 24, 1297, 275, 0, 0, 255, 255, 0, 0);
+	playerLevel = new Engine::Label("Level: " + std::to_string(player->PlayerLevel), "pirulen.ttf", 24, 1297, 275, 0, 0, 0, 255, 0, 0);
 	UIGroup->AddNewObject(playerLevel);
-	playerExp = new Engine::Label("Exp: " + std::to_string(player->Exp) + "/" + std::to_string(player->maxExp), "pirulen.ttf", 24, 1297, 300, 0, 0, 255, 255, 0, 0);
+	playerExp = new Engine::Label("Exp: " + std::to_string(player->Exp) + "/" + std::to_string(player->maxExp), "pirulen.ttf", 24, 1297, 300, 0, 200, 0, 255, 0, 0);
 	UIGroup->AddNewObject(playerExp);
+
+	//Player's strength
+	playerStrength = new Engine::Label("Strength: " + std::to_string(player->Strength), "pirulen.ttf", 18, 1297, 375, 150, 0, 0, 255, 0, 0);
+	UIGroup->AddNewObject(playerStrength);
+	//Upgrade button
+	strengthUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1550, 372);
+	strengthUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnStrengthUpgradeClick, this));
+	UIGroup->AddNewControlObject(strengthUpgradeButton);
+	strengthUpgradeButton->Visible = false;
+
+	//Players's Intelligence
+	playerIntelligence = new Engine::Label("Intelligence: " + std::to_string(player->Intelligence), "pirulen.ttf", 18, 1297, 425, 0, 0, 150, 255, 0, 0);
+	UIGroup->AddNewObject(playerIntelligence);
+	//Upgrade button
+	intelligenceUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1550, 422);
+	intelligenceUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnIntelligenceUpgradeClick, this));
+	UIGroup->AddNewControlObject(intelligenceUpgradeButton);
+	intelligenceUpgradeButton->Visible = false;
+
+	//Players's Endurance
+	playerEndurance = new Engine::Label("Endurance: " + std::to_string(player->Endurance), "pirulen.ttf", 18, 1297, 475, 0, 150, 0, 255, 0, 0);
+	UIGroup->AddNewObject(playerEndurance);
+	//Upgrade button
+	enduranceUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1550, 472);
+	enduranceUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnEnduranceUpgradeClick, this));
+	UIGroup->AddNewControlObject(enduranceUpgradeButton);
+	enduranceUpgradeButton->Visible = false;
+
+	//Players skill points
+	playerSkillPoint = new Engine::Label("Skill Points: " + std::to_string(player->SkillPoints), "pirulen.ttf", 24, 1297, 700, 0, 0, 0, 255, 0, 0);
+	UIGroup->AddNewObject(playerSkillPoint);
+	playerSkillPoint->Visible = false;
 }
 
 void PlayScene::UIBtnClicked(int id) {
@@ -699,6 +740,39 @@ void PlayScene::OnSkill1UpgradeClick() {
 				player->skill1ProjectileSpeed += 200;
 				player->skill1CooldownTimer = 0;
 			}
+		}
+	}
+}
+
+void PlayScene::OnStrengthUpgradeClick() {
+	if(strengthUpgradeButton->Visible){
+		if(player->SkillPoints > 0){
+			player->SkillPoints--;
+			player->Strength++;
+			playerStrength->Text = "Strength: " + std::to_string(player->Strength);
+			player->updateStats();
+		}
+	}
+}
+
+void PlayScene::OnIntelligenceUpgradeClick() {
+	if(intelligenceUpgradeButton->Visible){
+		if(player->SkillPoints > 0){
+			player->SkillPoints--;
+			player->Intelligence++;
+			playerIntelligence->Text = "Intelligence: " + std::to_string(player->Intelligence);
+			player->updateStats();
+		}
+	}
+}
+
+void PlayScene::OnEnduranceUpgradeClick() {
+	if(enduranceUpgradeButton->Visible){
+		if(player->SkillPoints > 0){
+			player->SkillPoints--;
+			player->Endurance++;
+			playerEndurance->Text = "Endurance: " + std::to_string(player->Endurance);
+			player->updateStats();
 		}
 	}
 }

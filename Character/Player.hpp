@@ -42,9 +42,6 @@ public:
 
     //Player stat variables
     int PlayerLevel = 1;
-    float energy = 100;
-    float maxEnergy = 100;
-    float energyRegenRate = 0.5;
     int SkillPoints = 0;
     int Exp = 0;
     int maxExp = 100;
@@ -52,13 +49,16 @@ public:
     float speed = 60.0f;
 
     int Strength = 1;
-    int Intligence = 1;
+    int Intelligence = 1;
     int Endurance = 1;
 
+    float maxEnergy = 100 + ((Endurance - 1) * 10);
+    float energy = maxEnergy;
     bool isSprinting = false;
+    float energyRegenRate = 0.5f + (Intelligence * 0.1f);
 
     //Basic attack variables
-    int attackDamage = 2;
+    int attackDamage = 2 + Strength;
     float angle;
     float prevAngle;
     bool attackCollisonChecked = false;
@@ -76,12 +76,13 @@ public:
     int skill1Level = 1;
     int skill1MaxLevel = 3;
     bool isUsingSkill1 = false;
-    int Skill1Damage = 4;
+    int Skill1Damage = 4 + Intelligence;
     float Skill1Lifetime = 1.0f;
     int skill1ProjectileSpeed = 350;
     int Skill1EnergyCost = 10;
 
     void ActivateSkill1();
+    void updateStats();
 };
 
 #endif // PLAYER_HPP

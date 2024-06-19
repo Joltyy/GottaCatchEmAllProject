@@ -21,6 +21,7 @@ Skill1::Skill1(Engine::Point position, Engine::Point velocity, float rotation, i
         visualOffsetX = -5.0f; // Example adjustment
     }
     this->Rotation = rotation;
+    currentFrame = 0;
 }
 
 void Skill1::Update(float deltaTime) {
@@ -61,11 +62,6 @@ void Skill1::Draw() const {
         al_draw_scaled_rotated_bitmap(frameBitmap, frameWidth / 2, frameHeight / 2, Position.x + visualOffsetX, Position.y + visualOffsetY, scale, scale, rotation * M_PI / 180, 0);
         al_destroy_bitmap(frameBitmap);
     }
-
-    // Draw Hit Box
-    // float visualContentPercentage = 0.8;
-    // float collisionRadius = ((frameWidth * scale) / 2) * visualContentPercentage;
-    // al_draw_circle(Position.x, Position.y, collisionRadius, al_map_rgb(255, 0, 0), 2);
 }
 
 void Skill1::OnExplode(Enemy* enemy) {
