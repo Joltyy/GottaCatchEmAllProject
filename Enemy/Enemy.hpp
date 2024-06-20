@@ -30,7 +30,7 @@ public:
 	void UpdatePath(const std::vector<std::vector<int>>& mapDistance);
 	void Update(float deltaTime) override;
 	void Draw() const override;
-	float knockbackTimer = 0.3f;
+	float knockbackTimer = 0.5f;
 	float knockbacktimerturret = 50.0f;
 };
 #endif // ENEMY_HPP
