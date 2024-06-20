@@ -48,6 +48,8 @@ Turret::Turret(std::string imgBase, std::string imgTurret, float x, float y, flo
 
 void Turret::Hit(float damage) {
 	std::cout << hp << std::endl;
+	std::cout << damage << std::endl;
+
 	hp -= damage;
 	if (hp <= 0) {
 		OnExplode();
@@ -126,6 +128,9 @@ void Turret::Update(float deltaTime) {
             // Set enemy to knockback state if applicable.
             enemy->isKnockback = true;
             enemy->knockbackTimer = 0.3f; // Adjust knockback duration as needed.
+
+			//decrease turret life when hit by enemy
+			Turret::Hit(enemy->damage);
         }
     }
 }
