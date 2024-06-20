@@ -9,11 +9,15 @@ namespace Engine {
 	Sprite::Sprite(std::string img, float x, float y, float w, float h, float anchorX, float anchorY,
 		float rotation, float vx, float vy, unsigned char r, unsigned char g, unsigned char b, unsigned char a) :
 		Image(img, x, y, w, h, anchorX, anchorY), Rotation(rotation), Velocity(Point(vx, vy)),
-		Tint(al_map_rgba(r, g, b, a)), isKnockback(false) {
+		Tint(al_map_rgba(r, g, b, a)), isKnockback(false), isKnockbackturret(false) {
 	}
 
 	void Sprite::SetKnockback(bool knockback) {
         isKnockback = knockback;
+    }
+
+	void Sprite::SetKnockbackturret(bool knockback) {
+        isKnockbackturret = knockback;
     }
 
 	void Sprite::Draw() const {
@@ -24,6 +28,14 @@ namespace Engine {
 			al_unmap_rgba(Tint, &r, &g, &b, &a);
 			// Adjust the alpha value to 128 for 50% transparency
 			drawTint = al_map_rgba(r, g, b, a * 0.5);
+		}
+
+		if (isKnockbackturret) {
+			unsigned char r, g, b, a;
+			// Extract the RGBA components from the Tint color
+			al_unmap_rgba(Tint, &r, &g, &b, &a);
+			// Adjust the alpha value to 128 for 50% transparency
+			drawTint = al_map_rgba(r, g, b, a * 0.4);
 		}
 		
 		al_draw_tinted_scaled_rotated_bitmap(bmp.get(), Tint, Anchor.x * GetBitmapWidth(), Anchor.y * GetBitmapHeight(),

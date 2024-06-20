@@ -53,8 +53,10 @@ namespace Engine {
 		void Update(float deltaTime) override;
 
 		void SetKnockback(bool knockback);
+		void SetKnockbackturret(bool knockback);
 
 		bool isKnockback;
+		bool isKnockbackturret;
 	};
 }
 #endif // SPRITE_HPP
