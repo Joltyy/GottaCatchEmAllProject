@@ -31,5 +31,6 @@ public:
 	void Update(float deltaTime) override;
 	void Draw() const override;
 	float knockbackTimer = 0.3f;
+	float knockbacktimerturret = 50.0f;
 };
 #endif // ENEMY_HPP

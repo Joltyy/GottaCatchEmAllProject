@@ -146,6 +146,15 @@ void Enemy::Update(float deltaTime) {
 			knockbackTimer = 0.3f;
 		}
 	}
+	if (isKnockbackturret) {
+		knockbacktimerturret -= deltaTime;
+		std::cout << knockbacktimerturret << std::endl;
+		if (knockbacktimerturret <= 0) {
+			isKnockbackturret = false;
+			knockbacktimerturret = 50.0f;
+		}
+	}
+	std::cout << isKnockbackturret << std::endl;
 	Rotation = atan2(Velocity.y, Velocity.x);
 	Sprite::Update(deltaTime);
 }
