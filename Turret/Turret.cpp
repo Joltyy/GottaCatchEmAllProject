@@ -122,7 +122,7 @@ void Turret::Update(float deltaTime) {
             Engine::Point knockbackDirection = diff.Normalize();
 
             // Apply knockback to enemy position.
-            enemy->Position = enemy->Position + (knockbackDirection * 10.f);
+            enemy->Position = enemy->Position + (knockbackDirection * 20.f);
 
             // Set enemy to knockback state if applicable.
             enemy->isKnockbackturret = true;
