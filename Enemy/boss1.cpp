@@ -7,7 +7,7 @@ ALLEGRO_BITMAP* boss1_up;
 ALLEGRO_BITMAP* boss1_down;
 
 boss1::boss1(int x, int y)
-    : Enemy("Animations/giratina_right.png", x, y, 20, 20, 20, 10, 200), frameCount(0) {
+    : Enemy("Animations/giratina_right.png", x, y, 20, 20, 200, 10, 20, 200), frameCount(0) {
     // Add the paths of your frame images to the frames vector.
     boss1_right = al_load_bitmap("Resource/images/Animations/giratina_right.png");
     boss1_left = al_load_bitmap("Resource/images/Animations/giratina_left.png");
