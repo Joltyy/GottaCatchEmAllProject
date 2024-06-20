@@ -116,21 +116,22 @@ void Turret::Update(float deltaTime) {
     // Check for collisions with enemies.
     for (auto& it : scene->EnemyGroup->GetObjects()) {
         Engine::Point diff = it->Position - Position;
-        Enemy* enemy = dynamic_cast<Enemy*>(it);
         if (diff.Magnitude() <= hitbox) {
+            Enemy* enemy = dynamic_cast<Enemy*>(it);
+
             // Calculate knockback direction.
             Engine::Point knockbackDirection = diff.Normalize();
 
             // Apply knockback to enemy position.
-            enemy->Position = enemy->Position + (knockbackDirection * 20.f);
+            enemy->Position = enemy->Position + (knockbackDirection * knockbackDistance);
 
             // Set enemy to knockback state if applicable.
-            enemy->isKnockbackturret = true;
-			enemy->knockbacktimerturret = 50.0f;
+            enemy->isKnockback = true;
+            enemy->knockbackTimer = 0.3f; // Adjust knockback duration as needed.
+
+			//decrease turret life when hit by enemsy
+			Turret::Hit(enemy->damage);
         }
-		// if(enemy->isKnockbackturret == true){
-		// 	if
-		// }
     }
 }
 void Turret::Draw() const {
