@@ -60,6 +60,8 @@ public:
 	Group* EnemyGroup;
 	Group* EffectGroup;
 	Group* UIGroup;
+	Group* turretUpgradeButtonGroup;
+	Group* miscGroup;
 	Engine::Label* UIMoney;
 	Engine::Label* UILives;
 	Engine::Label* UIScore;
@@ -82,6 +84,10 @@ public:
 	Engine::ImageButton* strengthUpgradeButton;
 	Engine::ImageButton* intelligenceUpgradeButton;
 	Engine::ImageButton* enduranceUpgradeButton;
+	Engine::ImageButton* machinegunUpgradeButton;
+	Engine::ImageButton* missileUpgradeButton;
+	Engine::ImageButton* laserUpgradeButton;
+	Engine::ImageButton* flameUpgradeButton;
 
 	Engine::Image* imgTarget;
 	Engine::Sprite* dangerIndicator;
@@ -118,10 +124,14 @@ public:
 	void OnStrengthUpgradeClick();
 	void OnIntelligenceUpgradeClick();
 	void OnEnduranceUpgradeClick();
-	void DisplayUpgradeOptions(Turret* turret);
-	void OnUpgradeTurret(Turret* turret);
+	void OnMachineGunUpgradeClick();
+	void OnMissileUpgradeClick();
+	void OnLaserUpgradeClick();
+	void OnFlameUpgradeClick();
 	//Turret* getTurret(int id);
 	//void removeTurret(int id);
 	// void ModifyReadMapTiles();
+
+	Turret* currentTurret;
 };
 #endif // PLAYSCENE_HPP

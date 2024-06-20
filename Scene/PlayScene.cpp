@@ -1,4 +1,5 @@
 #include <allegro5/allegro.h>
+#include <allegro5/mouse.h>
 #include <algorithm>
 #include <cmath>
 #include <fstream>
@@ -9,6 +10,7 @@
 #include <memory>
 #include <fstream>
 #include <ctime>
+#include <string>
 
 #include "Engine/LOG.hpp"
 #include "Engine/AudioHelper.hpp"
@@ -92,6 +94,7 @@ void PlayScene::Initialize() {
 	AddNewObject(EnemyGroup = new Group());
 	AddNewObject(BulletGroup = new Group());
 	AddNewObject(EffectGroup = new Group());
+	AddNewObject(miscGroup = new Group());
 	// Should support buttons.
 	AddNewControlObject(UIGroup = new Group());
 	ReadMap();
@@ -134,6 +137,17 @@ void PlayScene::Terminate() {
 	deathBGMInstance = std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE>();
 	PlayScene::WriteScoreToScoreboard(score);
 	IScene::Terminate();
+	al_destroy_bitmap(PlayerImage);
+	al_destroy_bitmap(PlayerImageUp);
+	al_destroy_bitmap(PlayerImageDown);
+	al_destroy_bitmap(PlayerImageLeft);
+	al_destroy_bitmap(PlayerImageRight);
+	al_destroy_bitmap(PlayerImageAttack);
+	al_destroy_bitmap(PlayerImageAttackUp);
+	al_destroy_bitmap(PlayerImageAttackDown);
+	al_destroy_bitmap(PlayerImageAttackLeft);
+	al_destroy_bitmap(PlayerImageAttackRight);
+	al_destroy_bitmap(Skill1Image);
 }
 
 void PlayScene::Update(float deltaTime) {
@@ -200,6 +214,8 @@ void PlayScene::Update(float deltaTime) {
 				delete EffectGroup;
 				delete UIGroup;
 				delete imgTarget;
+				delete miscGroup;
+				delete turretUpgradeButtonGroup;
 				Engine::GameEngine::GetInstance().ChangeScene("win");
 			}
 			continue;
@@ -235,8 +251,12 @@ void PlayScene::Update(float deltaTime) {
 		enemy->Update(ticks);
 	}
 	if (preview) {
-		float centerX = (-player->position.x / 2.0) - 32;
-		float centerY = (-player->position.y / 2.0) - 32; 
+		float halfScreenWidth = 1280 / 2.0;
+		float halfScreenHeight =  832 / 2.0;
+		float desiredCenterX = -(player->position.x + 64) + halfScreenWidth;
+		float desiredCenterY = -(player->position.y + 64) + halfScreenHeight;
+		float centerX = std::max((int)std::min(desiredCenterX, 0.0f), -(PlayScene::MapWidth * PlayScene::BlockSize - 1280));
+		float centerY = std::max((int)std::min(desiredCenterY, 0.0f), -(PlayScene::MapHeight * PlayScene::BlockSize - 832));
 		preview->Position = Engine::GameEngine::GetInstance().GetMousePosition();
 		preview->Position.x -= centerX;
 		preview->Position.y -= centerY;
@@ -245,24 +265,22 @@ void PlayScene::Update(float deltaTime) {
 	}
 	player->Update(deltaTime);
 
-	for (auto turret : TowerGroup->GetObjects()) {
-		float mx = Engine::GameEngine::GetInstance().GetMousePosition().x;
-		float my = Engine::GameEngine::GetInstance().GetMousePosition().y;
-		if (mx >= turret->Position.x && mx <= turret->Position.x + 64 &&
-			my >= turret->Position.y && my <= turret->Position.y + 64) {
-			// Click is within turret bounds
-			std::cout << "Display upgrade\n";
-			DisplayUpgradeOptions(static_cast<Turret*>(turret));
-			break; // Assuming only one turret can be clicked at a time
-		}
-	}
+	float halfScreenWidth = 1280 / 2.0;
+	float halfScreenHeight =  832 / 2.0;
+	float desiredCenterX = -(player->position.x + 64) + halfScreenWidth;
+	float desiredCenterY = -(player->position.y + 64) + halfScreenHeight;
+	float centerX = std::max((int)std::min(desiredCenterX, 0.0f), -(PlayScene::MapWidth * PlayScene::BlockSize - 1280));
+	float centerY = std::max((int)std::min(desiredCenterY, 0.0f), -(PlayScene::MapHeight * PlayScene::BlockSize - 832));
 }
 void PlayScene::Draw() const {
 	al_clear_to_color(al_map_rgb(0, 0, 0));
     
-    // Calculate the camera's center position based on the player's position
-	float centerX = (-player->position.x / 2.0) - 32;
-	float centerY = (-player->position.y / 2.0) - 32;
+	float halfScreenWidth = 1280 / 2.0;
+	float halfScreenHeight =  832 / 2.0;
+	float desiredCenterX = -(player->position.x + 64) + halfScreenWidth;
+	float desiredCenterY = -(player->position.y + 64) + halfScreenHeight;
+	float centerX = std::max((int)std::min(desiredCenterX, 0.0f), -(PlayScene::MapWidth * PlayScene::BlockSize - 1280));
+	float centerY = std::max((int)std::min(desiredCenterY, 0.0f), -(PlayScene::MapHeight * PlayScene::BlockSize - 832));
 
     ALLEGRO_TRANSFORM camera;
     al_identity_transform(&camera); // Reset the camera to the identity transformation.
@@ -277,6 +295,7 @@ void PlayScene::Draw() const {
 	EnemyGroup->Draw();
 	BulletGroup->Draw();
 	EffectGroup->Draw();
+	miscGroup->Draw();
 	player->Draw();
 	if (DebugMode) {
 		// Draw reverse BFS distance on all reachable blocks.
@@ -290,6 +309,7 @@ void PlayScene::Draw() const {
 				}
 			}
 		}
+		al_draw_filled_circle((Engine::GameEngine::GetInstance().GetMousePosition().x  - centerX), Engine::GameEngine::GetInstance().GetMousePosition().y - centerY, 10, al_map_rgba(255, 0, 0, 100));
 	}
 
 	al_identity_transform(&camera); // Reset the camera to the identity transformation.
@@ -304,12 +324,12 @@ void PlayScene::Draw() const {
 	    // Draw with slight transparency if on cooldown.
         al_draw_tinted_scaled_bitmap(Skill1Image, al_map_rgba(255, 255, 255, 128), 
                                  0, 0, al_get_bitmap_width(Skill1Image), al_get_bitmap_height(Skill1Image), 
-                                 1297, 600, 64, 64, 0);
+                                 1297, 700, 64, 64, 0);
     } else {
         // Draw normally if not on cooldown.
         al_draw_scaled_bitmap(Skill1Image, 
                           0, 0, al_get_bitmap_width(Skill1Image), al_get_bitmap_height(Skill1Image), 
-                          1297, 600, 64, 64, 0);
+                          1297, 700, 64, 64, 0);
     }
 
 	//Draw upgrade button
@@ -327,6 +347,31 @@ void PlayScene::Draw() const {
 		enduranceUpgradeButton->Visible = true;
 		playerSkillPoint->Visible = true;
 	}
+
+	//draw turret upgrasde button
+	if(money >= 400){
+		missileUpgradeButton->Visible = true;
+	} else {
+		missileUpgradeButton->Visible = false;
+	}
+
+	if(money >= 300){
+		laserUpgradeButton->Visible = true;
+	} else {
+		laserUpgradeButton->Visible = false;
+	}
+
+	if(money >= 200){
+		flameUpgradeButton->Visible = true;
+	} else {
+		flameUpgradeButton->Visible = false;
+	}
+
+	if(money >= 100){
+		machinegunUpgradeButton->Visible = true;
+	} else {
+		machinegunUpgradeButton->Visible = false;
+	}
 }
 void PlayScene::OnMouseDown(int button, int mx, int my) {
 	if ((button & 1) && !imgTarget->Visible && preview) {
@@ -338,10 +383,14 @@ void PlayScene::OnMouseDown(int button, int mx, int my) {
 }
 void PlayScene::OnMouseMove(int mx, int my) {
 	IScene::OnMouseMove(mx, my);
-	float centerX = (-player->position.x / 2.0) - 32;
-	float centerY = (-player->position.y / 2.0) - 32;
-	int blockx = centerX / BlockSize;
-	int blocky = centerY / BlockSize;
+	float halfScreenWidth = 1280 / 2.0;
+	float halfScreenHeight =  832 / 2.0;
+	float desiredCenterX = -(player->position.x + 64) + halfScreenWidth;
+	float desiredCenterY = -(player->position.y + 64) + halfScreenHeight;
+	float centerX = std::max((int)std::min(desiredCenterX, 0.0f), -(PlayScene::MapWidth * PlayScene::BlockSize - 1280));
+	float centerY = std::max((int)std::min(desiredCenterY, 0.0f), -(PlayScene::MapHeight * PlayScene::BlockSize - 832));
+	int blockx = (centerX) / BlockSize;
+	int blocky = (centerY) / BlockSize;
 	const int x = mx / BlockSize;
 	const int y = my / BlockSize;
 	if (!preview || x < 0 || x >= MapWidth || y < 0 || y >= MapHeight) {
@@ -354,12 +403,16 @@ void PlayScene::OnMouseMove(int mx, int my) {
 }
 void PlayScene::OnMouseUp(int button, int mx, int my) {
 	IScene::OnMouseUp(button, mx, my);
-	float centerX = (-player->position.x / 2.0) - 32;
-	float centerY = (-player->position.y / 2.0) - 32;
+	float halfScreenWidth = 1280 / 2.0;
+	float halfScreenHeight =  832 / 2.0;
+	float desiredCenterX = -(player->position.x + 64) + halfScreenWidth;
+	float desiredCenterY = -(player->position.y + 64) + halfScreenHeight;
+	float centerX = std::max((int)std::min(desiredCenterX, 0.0f), -(PlayScene::MapWidth * PlayScene::BlockSize - 1280));
+	float centerY = std::max((int)std::min(desiredCenterY, 0.0f), -(PlayScene::MapHeight * PlayScene::BlockSize - 832));
 	if (!imgTarget->Visible)
 		return;
-	const int x = mx / BlockSize - (centerX / BlockSize);
-	const int y = my / BlockSize - (centerY / BlockSize);
+	const int x = mx / BlockSize - ((centerX) / BlockSize);
+	const int y = my / BlockSize - ((centerY) / BlockSize);
 	if (button & 1) {
 		if (mapState[y][x] != TILE_OCCUPIED) {
 			if (!preview)
@@ -551,7 +604,7 @@ void PlayScene::ConstructUI() {
 	UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, 1294, 0));
 	UIGroup->AddNewObject(UIMoney = new Engine::Label(std::string("$") + std::to_string(money), "pirulen.ttf", 24, 1294, 48));
 	UIGroup->AddNewObject(UILives = new Engine::Label(std::string("Life ") + std::to_string(lives), "pirulen.ttf", 24, 1294, 88));
-	UIGroup->AddNewObject(UIScore = new Engine::Label(std::string("Score: ") + std::to_string(score), "pirulen.ttf", 24, 1294, 222));
+	UIGroup->AddNewObject(UIScore = new Engine::Label(std::string("Score: ") + std::to_string(score), "pirulen.ttf", 24, 1294, 300));
 	TurretButton* btn;
 
 	// Button 1
@@ -604,56 +657,80 @@ void PlayScene::ConstructUI() {
 	UIGroup->AddNewObject(dangerIndicator);
 
 	//Skill 1 upgrade button
-	skill1UpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1313, 665);
+	skill1UpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1313, 765);
 	skill1UpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnSkill1UpgradeClick, this));
 	UIGroup->AddNewControlObject(skill1UpgradeButton);
 	skill1UpgradeButton->Visible = false;
 
     //Skill 1 level label
-    Skill1LevelLabel = new Engine::Label("lvl " + std::to_string(player->skill1Level), "pirulen.ttf", 12, 1330, 585, 0, 0, 0, 255, 0.5, 0.5);
+    Skill1LevelLabel = new Engine::Label("lvl " + std::to_string(player->skill1Level), "pirulen.ttf", 12, 1330, 685, 0, 0, 0, 255, 0.5, 0.5);
     UIGroup->AddNewObject(Skill1LevelLabel);
 
 	//Player's Energy level
-	playerEnergy = new Engine::Label("Energy: " + std::to_string(player->energy), "pirulen.ttf", 24, 1297, 325, 0, 0, 255, 255, 0, 0);
+	playerEnergy = new Engine::Label("Energy: " + std::to_string(player->energy), "pirulen.ttf", 24, 1297, 425, 0, 0, 255, 255, 0, 0);
 	UIGroup->AddNewObject(playerEnergy);
 
 	//Players's level and exp
-	playerLevel = new Engine::Label("Level: " + std::to_string(player->PlayerLevel), "pirulen.ttf", 24, 1297, 275, 0, 0, 0, 255, 0, 0);
+	playerLevel = new Engine::Label("Level: " + std::to_string(player->PlayerLevel), "pirulen.ttf", 24, 1297, 375, 0, 0, 0, 255, 0, 0);
 	UIGroup->AddNewObject(playerLevel);
-	playerExp = new Engine::Label("Exp: " + std::to_string(player->Exp) + "/" + std::to_string(player->maxExp), "pirulen.ttf", 24, 1297, 300, 0, 200, 0, 255, 0, 0);
+	playerExp = new Engine::Label("Exp: " + std::to_string(player->Exp) + "/" + std::to_string(player->maxExp), "pirulen.ttf", 24, 1297, 400, 0, 200, 0, 255, 0, 0);
 	UIGroup->AddNewObject(playerExp);
 
 	//Player's strength
-	playerStrength = new Engine::Label("Strength: " + std::to_string(player->Strength), "pirulen.ttf", 18, 1297, 375, 150, 0, 0, 255, 0, 0);
+	playerStrength = new Engine::Label("Strength: " + std::to_string(player->Strength), "pirulen.ttf", 18, 1297, 475, 150, 0, 0, 255, 0, 0);
 	UIGroup->AddNewObject(playerStrength);
 	//Upgrade button
-	strengthUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1550, 372);
+	strengthUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1550, 472);
 	strengthUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnStrengthUpgradeClick, this));
 	UIGroup->AddNewControlObject(strengthUpgradeButton);
 	strengthUpgradeButton->Visible = false;
 
 	//Players's Intelligence
-	playerIntelligence = new Engine::Label("Intelligence: " + std::to_string(player->Intelligence), "pirulen.ttf", 18, 1297, 425, 0, 0, 150, 255, 0, 0);
+	playerIntelligence = new Engine::Label("Intelligence: " + std::to_string(player->Intelligence), "pirulen.ttf", 18, 1297, 525, 0, 0, 150, 255, 0, 0);
 	UIGroup->AddNewObject(playerIntelligence);
 	//Upgrade button
-	intelligenceUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1550, 422);
+	intelligenceUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1550, 522);
 	intelligenceUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnIntelligenceUpgradeClick, this));
 	UIGroup->AddNewControlObject(intelligenceUpgradeButton);
 	intelligenceUpgradeButton->Visible = false;
 
 	//Players's Endurance
-	playerEndurance = new Engine::Label("Endurance: " + std::to_string(player->Endurance), "pirulen.ttf", 18, 1297, 475, 0, 150, 0, 255, 0, 0);
+	playerEndurance = new Engine::Label("Endurance: " + std::to_string(player->Endurance), "pirulen.ttf", 18, 1297, 575, 0, 150, 0, 255, 0, 0);
 	UIGroup->AddNewObject(playerEndurance);
 	//Upgrade button
-	enduranceUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1550, 472);
+	enduranceUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1550, 572);
 	enduranceUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnEnduranceUpgradeClick, this));
 	UIGroup->AddNewControlObject(enduranceUpgradeButton);
 	enduranceUpgradeButton->Visible = false;
 
 	//Players skill points
-	playerSkillPoint = new Engine::Label("Skill Points: " + std::to_string(player->SkillPoints), "pirulen.ttf", 24, 1297, 700, 0, 0, 0, 255, 0, 0);
+	playerSkillPoint = new Engine::Label("Skill Points: " + std::to_string(player->SkillPoints), "pirulen.ttf", 24, 1297, 800, 0, 0, 0, 255, 0, 0);
 	UIGroup->AddNewObject(playerSkillPoint);
 	playerSkillPoint->Visible = false;
+
+	//MachinegunUpgradebutton
+	machinegunUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1310, 220);
+	machinegunUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnMachineGunUpgradeClick, this));
+	UIGroup->AddNewControlObject(machinegunUpgradeButton);
+	machinegunUpgradeButton->Visible = false;
+
+	//LaserUpgradebutton
+	laserUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1384, 220);
+	laserUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnLaserUpgradeClick, this));
+	UIGroup->AddNewControlObject(laserUpgradeButton);
+	laserUpgradeButton->Visible = false;
+
+	//MissileUpgradebutton
+	missileUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1458, 220);
+	missileUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnMissileUpgradeClick, this));
+	UIGroup->AddNewControlObject(missileUpgradeButton);
+	missileUpgradeButton->Visible = false;
+
+	//FlameUpgradebutton
+	flameUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1532, 220);
+	flameUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnFlameUpgradeClick, this));
+	UIGroup->AddNewControlObject(flameUpgradeButton);
+	flameUpgradeButton->Visible = false;
 }
 
 void PlayScene::UIBtnClicked(int id) {
@@ -677,13 +754,15 @@ void PlayScene::UIBtnClicked(int id) {
 	preview->Enabled = false;
 	preview->Preview = true;
 	TowerGroup->AddNewObject(preview);
-	float centerX = (-player->position.x / 2.0) - 32;
-	float centerY = (-player->position.y / 2.0) - 32;
+	float halfScreenWidth = 1280 / 2.0;
+	float halfScreenHeight =  832 / 2.0;
+	float desiredCenterX = -(player->position.x + 64) + halfScreenWidth;
+	float desiredCenterY = -(player->position.y + 64) + halfScreenHeight;
+	float centerX = std::max((int)std::min(desiredCenterX, 0.0f), -(PlayScene::MapWidth * PlayScene::BlockSize - 1280));
+	float centerY = std::max((int)std::min(desiredCenterY, 0.0f), -(PlayScene::MapHeight * PlayScene::BlockSize - 832));
 	preview->Position.x -= centerX;
 	preview->Position.y -= centerY;
-	std::cout << "preview x: " << preview->Position.x << " preview y: " << preview->Position.y << std::endl;
-	std::cout << "mouse x: " << Engine::GameEngine::GetInstance().GetMousePosition().x << " mouse y: " << Engine::GameEngine::GetInstance().GetMousePosition().y << std::endl;
-	OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x - centerX, Engine::GameEngine::GetInstance().GetMousePosition().y - centerY);
+	OnMouseMove(Engine::GameEngine::GetInstance().GetMousePosition().x + (centerX - 64), Engine::GameEngine::GetInstance().GetMousePosition().y + (centerY - 64));
 }
 
 bool PlayScene::CheckSpaceValid(int x, int y) {
@@ -721,7 +800,6 @@ std::vector<std::vector<int>> PlayScene::CalculateBFSDistance() {
     // Push center point.
     int centerX = MapWidth / 2;
     int centerY = MapHeight / 2;
-	//std::cout << centerX << " " << centerY;
     // BFS from center point.
     if (mapState[centerY][centerX] != TILE_DIRT)
         return map;
@@ -833,13 +911,57 @@ void PlayScene::EarnExp(int exp){
 	player->Exp += exp;
 }
 
-void PlayScene::DisplayUpgradeOptions(Turret* turret) {
-	Engine::ImageButton* upgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", turret->Position.x, turret->Position.y - 20);
-	upgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnUpgradeTurret, this, turret));
-	TowerGroup->AddNewControlObject(upgradeButton);
+
+void PlayScene::OnMachineGunUpgradeClick() {
+	if(machinegunUpgradeButton->Visible){
+		if(money > 100){
+			for(auto turret : TowerGroup->GetObjects()){
+				Turret* myturret = dynamic_cast<Turret*>(turret);
+				if(myturret->type == "MachineGun"){
+					std::cout << "upgrade\n";
+					myturret->damage += 2;
+					money -= 100;
+				}
+			}
+		}
+	}
 }
 
-void PlayScene::OnUpgradeTurret(Turret* turret) {
-	turret->damage *= 1.5;
-	return;
+void PlayScene::OnLaserUpgradeClick() {
+	if(laserUpgradeButton->Visible){
+		if(money > 300){
+			for(auto turret : TowerGroup->GetObjects()){
+				if(dynamic_cast<Turret*>(turret)->type == "Laser"){
+					dynamic_cast<LaserTurret*>(turret)->damage += 2;
+					money -= 300;
+				}
+			}
+		}
+	}
+}
+
+void PlayScene::OnMissileUpgradeClick() {
+	if(missileUpgradeButton->Visible){
+		if(money > 400){
+			for(auto turret : TowerGroup->GetObjects()){
+				if(dynamic_cast<Turret*>(turret)->type == "Missile"){
+					dynamic_cast<MissileTurret*>(turret)->damage *= 1.5;
+					money -= 400;
+				}
+			}
+		}
+	}
+}
+
+void PlayScene::OnFlameUpgradeClick() {
+	if(flameUpgradeButton->Visible){
+		if(money > 200){
+			for(auto turret : TowerGroup->GetObjects()){
+				if(dynamic_cast<Turret*>(turret)->type == "Flame"){
+					dynamic_cast<FlameTurret*>(turret)->damage += 1;
+					money -= 200;
+				}
+			}
+		}
+	}
 }

@@ -15,6 +15,7 @@ ShotgunTurret::ShotgunTurret(float x, float y) :
 	Turret("play/tower-base.png", "play/turret-5.png", x, y, 150, Price, 1.5, 100, 1, 35) {
 	// Move center downward, since we the turret head is slightly biased upward.
 	Anchor.y += 8.0f / GetBitmapHeight();
+	type = "Shotgun";
 }
 
 void ShotgunTurret::CreateBullet() {

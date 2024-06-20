@@ -25,7 +25,6 @@ protected:
     // Reference: Design Patterns - Factory Method.
     virtual void CreateBullet() = 0;
     virtual void OnExplode();   // new
-
 public:
     int damage;
     bool Enabled = true;
@@ -37,5 +36,6 @@ public:
     void Draw() const override;
 	int GetPrice() const;
     void Hit(float damage);
+    std::string type = "";
 };
 #endif // TURRET_HPP
