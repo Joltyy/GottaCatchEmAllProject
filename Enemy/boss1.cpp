@@ -5,6 +5,10 @@ ALLEGRO_BITMAP* boss1_left;
 ALLEGRO_BITMAP* boss1_right;
 ALLEGRO_BITMAP* boss1_up;
 ALLEGRO_BITMAP* boss1_down;
+ALLEGRO_BITMAP* boss1_attk_down;
+ALLEGRO_BITMAP* boss1_attk_left;
+ALLEGRO_BITMAP* boss1_attk_right;
+ALLEGRO_BITMAP* boss1_attk_up;
 
 boss1::boss1(int x, int y)
     : Enemy("Animations/giratina_right.png", x, y, 20, 20, 200, 10, 20, 200), frameCount(0) {
@@ -13,6 +17,21 @@ boss1::boss1(int x, int y)
     boss1_left = al_load_bitmap("Resource/images/Animations/giratina_left.png");
     boss1_down = al_load_bitmap("Resource/images/Animations/giratina_down.png");
     boss1_up = al_load_bitmap("Resource/images/Animations/giratina_up.png");
+    boss1_attk_down = al_load_bitmap("Resource/images/Animations/giratina_attack_down.png");
+    boss1_attk_right = al_load_bitmap("Resource/images/Animations/giratina_attack_right.png");
+    boss1_attk_left = al_load_bitmap("Resource/images/Animations/giratina_attack_left.png");
+    boss1_attk_up = al_load_bitmap("Resource/images/Animations/giratina_attack_up.png");
+}
+boss1::~boss1()
+{
+    al_destroy_bitmap(boss1_attk_down);
+    al_destroy_bitmap(boss1_attk_up);
+    al_destroy_bitmap(boss1_attk_left);
+    al_destroy_bitmap(boss1_attk_right);
+    al_destroy_bitmap(boss1_up);
+    al_destroy_bitmap(boss1_down);
+    al_destroy_bitmap(boss1_left);
+    al_destroy_bitmap(boss1_right);
 }
 
 void boss1::Update(float deltaTime) {
@@ -28,6 +47,16 @@ void boss1::Update(float deltaTime) {
     else if (Velocity.x < 0) direction = 1; // Moving left
     else if (Velocity.y < 0) direction = 2; // Moving up
     else if (Velocity.y > 0) direction = 3; // Moving down
+
+    // Check if the boss is being knockbacked.
+    if (boss_Knockback) {
+        knockbackTimer -= deltaTime;
+        if (knockbackTimer <= 0) {
+            // Reset the knockback state after the timer runs out.
+            boss_Knockback = false;
+        }
+    }
+
     Enemy::Update(deltaTime);
 }
 
@@ -50,19 +79,23 @@ void boss1::Draw() const {
     // Draw the current frame
     if(direction == 0)
     {
-        al_draw_scaled_bitmap(boss1_right, sourceX, sourceY, frameWidth, frameHeight, newPositionX, newPositionY, scaledWidth, scaledHeight, 0);
+        if(boss_Knockback) al_draw_scaled_bitmap(boss1_attk_right, sourceX, sourceY, frameWidth, frameHeight, newPositionX, newPositionY, scaledWidth, scaledHeight, 0);
+        else al_draw_scaled_bitmap(boss1_right, sourceX, sourceY, frameWidth, frameHeight, newPositionX, newPositionY, scaledWidth, scaledHeight, 0);
     }
     if(direction == 1)
     {
-        al_draw_scaled_bitmap(boss1_left, sourceX, sourceY, frameWidth, frameHeight, newPositionX, newPositionY, scaledWidth, scaledHeight, 0);
+        if (boss_Knockback) al_draw_scaled_bitmap(boss1_attk_left, sourceX, sourceY, frameWidth, frameHeight, newPositionX, newPositionY, scaledWidth, scaledHeight, 0);
+        else al_draw_scaled_bitmap(boss1_left, sourceX, sourceY, frameWidth, frameHeight, newPositionX, newPositionY, scaledWidth, scaledHeight, 0);
     }
     else if(direction == 2)
     {
-        al_draw_scaled_bitmap(boss1_up, sourceX, sourceY, frameWidth, frameHeight, newPositionX, newPositionY, scaledWidth, scaledHeight, 0);
+        if(boss_Knockback) al_draw_scaled_bitmap(boss1_attk_up, sourceX, sourceY, frameWidth, frameHeight, newPositionX, newPositionY, scaledWidth, scaledHeight, 0);
+        else al_draw_scaled_bitmap(boss1_up, sourceX, sourceY, frameWidth, frameHeight, newPositionX, newPositionY, scaledWidth, scaledHeight, 0);
     }
     else if(direction == 3)
     {
-        al_draw_scaled_bitmap(boss1_down, sourceX, sourceY, frameWidth, frameHeight, newPositionX, newPositionY, scaledWidth, scaledHeight, 0);
+        if(boss_Knockback) al_draw_scaled_bitmap(boss1_attk_down, sourceX, sourceY, frameWidth, frameHeight, newPositionX, newPositionY, scaledWidth, scaledHeight, 0);
+        else al_draw_scaled_bitmap(boss1_down, sourceX, sourceY, frameWidth, frameHeight, newPositionX, newPositionY, scaledWidth, scaledHeight, 0);
     }
     
 

@@ -24,6 +24,7 @@
 #include "Engine/LOG.hpp"
 #include "Scene/PlayScene.hpp"
 #include "Turret/Turret.hpp"
+#include "Enemy/boss1.hpp"
 
 PlayScene* Turret::getPlayScene() {
 	return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());
@@ -47,8 +48,8 @@ Turret::Turret(std::string imgBase, std::string imgTurret, float x, float y, flo
 }
 
 void Turret::Hit(float damage) {
-	std::cout << hp << std::endl;
-	std::cout << damage << std::endl;
+	//std::cout << hp << std::endl;
+	//std::cout << damage << std::endl;
 
 	hp -= damage;
 	if (hp <= 0) {
@@ -128,6 +129,13 @@ void Turret::Update(float deltaTime) {
             // Set enemy to knockback state if applicable.
             enemy->isKnockback = true;
             enemy->knockbackTimer = 0.3f; // Adjust knockback duration as needed.
+
+			// Check if the enemy is a boss1.
+			boss1* boss = dynamic_cast<boss1*>(enemy);
+			if (boss != nullptr) {
+				// Set the boss to knockbacked state.
+				boss->SetKnockbacked(true);
+			}
 
 			//decrease turret life when hit by enemy
 			Turret::Hit(enemy->damage);
