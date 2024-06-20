@@ -22,17 +22,17 @@ boss1::boss1(int x, int y)
     boss1_attk_left = al_load_bitmap("Resource/images/Animations/giratina_attack_left.png");
     boss1_attk_up = al_load_bitmap("Resource/images/Animations/giratina_attack_up.png");
 }
-boss1::~boss1()
-{
-    al_destroy_bitmap(boss1_attk_down);
-    al_destroy_bitmap(boss1_attk_up);
-    al_destroy_bitmap(boss1_attk_left);
-    al_destroy_bitmap(boss1_attk_right);
-    al_destroy_bitmap(boss1_up);
-    al_destroy_bitmap(boss1_down);
-    al_destroy_bitmap(boss1_left);
-    al_destroy_bitmap(boss1_right);
-}
+// boss1::~boss1()
+// {
+//     al_destroy_bitmap(boss1_attk_down);
+//     al_destroy_bitmap(boss1_attk_up);
+//     al_destroy_bitmap(boss1_attk_left);
+//     al_destroy_bitmap(boss1_attk_right);
+//     al_destroy_bitmap(boss1_up);
+//     al_destroy_bitmap(boss1_down);
+//     al_destroy_bitmap(boss1_left);
+//     al_destroy_bitmap(boss1_right);
+// }
 
 void boss1::Update(float deltaTime) {
     static float frameTimer = 0;

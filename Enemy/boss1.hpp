@@ -19,7 +19,7 @@ private:
     
 public:
     boss1(int x, int y);
-    ~boss1();
+    //~boss1();
     void Update(float deltaTime) override;
     void Draw() const override;
     bool boss_Knockback; // Add this state variable

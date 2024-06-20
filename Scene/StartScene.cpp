@@ -23,8 +23,8 @@ void StartScene::Initialize() {
     int h = Engine::GameEngine::GetInstance().GetScreenSize().y;
     int halfW = w / 2;
     int halfH = h / 2;
-    Engine::Image* background = new Engine::Image("stage-select/background.png", 0, 0, w, h);
-    AddNewObject(background);
+    // Engine::Image* background = new Engine::Image("stage-select/background.png", 0, 0, w, h);
+    // AddNewObject(background);
 
     Engine::ImageButton* btn;
     AddNewObject(new Engine::Image("stage-select/title.png", halfW, halfH / 3 + 50, w - 100, 150, 0.5, 0.5));
