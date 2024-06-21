@@ -160,28 +160,43 @@ void Player::CheckAttackCollision() {
             if (!enemy->Visible) continue;
             Engine::Point directionToEnemy = (enemy->Position - Engine::Point{48, 48}) - position;
             float distanceToEnemy = directionToEnemy.Magnitude();
-            Engine::Point directionToEnemyNormalized = directionToEnemy.Normalize();
-            Engine::Point prevBitmapDirectionNormalized = prevBitmapDirection.Normalize();
-            if (directionToEnemy.Magnitude() > 0 && prevBitmapDirection.Magnitude() > 0) {
-                float dot = directionToEnemyNormalized.Dot(prevBitmapDirectionNormalized);
-                dot = std::max(-1.0f, std::min(1.0f, dot));
-                angle = acos(dot) * (180.0f / M_PI); // Convert radians to degrees
-                const float angleTolerance = 0.5f;
-                if (std::abs(prevAngle - angle) <= angleTolerance) {
-                    angle = prevAngle;
+            // Check if the enemy is a boss1 instance
+            Enemy* boss = dynamic_cast<Enemy*>(enemy);
+            if (boss != nullptr) {
+                // Use boss's hitbox for collision detection
+                float collisionDistance = distanceToEnemy - boss->hitbox;
+                if (collisionDistance <= attackRange) {
+                    // Collision detected, apply damage and knockback
+                    boss->Hit(attackDamage); // Assuming a Hit method and attackDamage variable exist
+                    Engine::Point knockbackDirection = directionToEnemy.Normalize() * knockbackDistance;
+                    boss->Position = boss->Position + knockbackDirection;
+                    boss->isKnockback = true; // Assuming a method to set knockback state
                 }
-                prevAngle = angle;
-                if (angle <= attackConeAngle && distanceToEnemy <= attackRange) {
-                    enemy->Hit(attackDamage); // Assuming a Hit method and attackDamage variable exist
-                    Engine::Point knockbackDirection = directionToEnemyNormalized * knockbackDistance;
-                    enemy->Position = enemy->Position + knockbackDirection;
-                    enemy->isKnockback = true;
-                }
+            } else {
+                // Existing collision detection for other enemies
+                Engine::Point directionToEnemyNormalized = directionToEnemy.Normalize();
+                Engine::Point prevBitmapDirectionNormalized = prevBitmapDirection.Normalize();
+                if (directionToEnemy.Magnitude() > 0 && prevBitmapDirection.Magnitude() > 0) {
+                    float dot = directionToEnemyNormalized.Dot(prevBitmapDirectionNormalized);
+                    dot = std::max(-1.0f, std::min(1.0f, dot));
+                    angle = acos(dot) * (180.0f / M_PI); // Convert radians to degrees
+                    const float angleTolerance = 0.5f;
+                    if (std::abs(prevAngle - angle) <= angleTolerance) {
+                        angle = prevAngle;
+                    }
+                    prevAngle = angle;
+                    if (angle <= attackConeAngle && distanceToEnemy <= attackRange) {
+                        enemy->Hit(attackDamage); // Assuming a Hit method and attackDamage variable exist
+                        Engine::Point knockbackDirection = directionToEnemyNormalized * knockbackDistance;
+                        enemy->Position = enemy->Position + knockbackDirection;
+                        enemy->isKnockback = true;
+                    }
             } else {
                 std::cout << "One or both direction vectors are zero vectors." << std::endl;
             }
         }
         attackCollisonChecked = true;
+    }
     }
 }
 

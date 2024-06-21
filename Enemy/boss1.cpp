@@ -11,7 +11,7 @@ ALLEGRO_BITMAP* boss1_attk_right;
 ALLEGRO_BITMAP* boss1_attk_up;
 
 boss1::boss1(int x, int y)
-    : Enemy("Animations/giratina_right.png", x, y, 20, 20, 200, 10, 20, 200), frameCount(0) {
+    : Enemy("Animations/giratina_right.png", x, y, 20, 20, 200, 10, 20, 200, 40), frameCount(0) {
     // Add the paths of your frame images to the frames vector.
     boss1_right = al_load_bitmap("Resource/images/Animations/giratina_right.png");
     boss1_left = al_load_bitmap("Resource/images/Animations/giratina_left.png");
@@ -102,6 +102,6 @@ void boss1::Draw() const {
     if (PlayScene::DebugMode) {
 		// Draw collision radius.
 		al_draw_circle(Position.x, Position.y, CollisionRadius, al_map_rgb(255, 0, 0), 2);
-
+        al_draw_circle(Position.x, Position.y, hitbox, al_map_rgb(0, 0, 100), 2);
 	}
 }
