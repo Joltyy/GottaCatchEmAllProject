@@ -11,7 +11,7 @@ ALLEGRO_BITMAP* zapdos_attk_right;
 ALLEGRO_BITMAP* zapdos_attk_up;
 
 zapdos::zapdos(int x, int y)
-    : Enemy("Animations/zapdos_down.png", x, y, 20, 20, 200, 10, 20, 200, 40), frameCount(0) {
+    : Enemy("Animations/zapdos_down.png", x, y, 20, 20, 10 * extraHp, 10, 20, 2 * extraDmg, 40), frameCount(0) {
     // Add the paths of your frame images to the frames vector.
     zapdos_right = al_load_bitmap("Resource/images/Animations/zapdos_right.png");
     zapdos_left = al_load_bitmap("Resource/images/Animations/zapdos_left.png");
