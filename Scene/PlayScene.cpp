@@ -197,59 +197,50 @@ void PlayScene::Update(float deltaTime) {
 		dangerIndicator->Tint.a = 0;
 	}
 	if (SpeedMult == 0)
-		deathCountDown = -1;
-	for (int i = 0; i < SpeedMult; i++) {
+        deathCountDown = -1;
+
+	for(int i = 0; i < SpeedMult; i++){
 		IScene::Update(deltaTime);
-		// Check if we should create new enemy.
-		ticks += deltaTime;
-		if (enemyWaveData.empty()) {
-			if (EnemyGroup->GetObjects().empty()) {
-				// Free resources.
-				delete TileMapGroup;
-				delete GroundEffectGroup;
-				delete DebugIndicatorGroup;
-				delete TowerGroup;
-				delete EnemyGroup;
-				delete BulletGroup;
-				delete EffectGroup;
-				delete UIGroup;
-				delete imgTarget;
-				delete miscGroup;
-				delete turretUpgradeButtonGroup;
-				Engine::GameEngine::GetInstance().ChangeScene("win");
+		timeSinceLastSpawn += deltaTime;
+		timeSinceStart += deltaTime;
+
+		// Increase difficulty over time.
+		if (timeSinceStart >= difficultyIncreaseInterval) {
+			spawnInterval = std::max(1.0f, spawnInterval - 1.0f); // Decrease spawn interval to a minimum of 0.5 seconds.
+			// Optionally, increase enemy toughness here.
+			Enemy::extraDmg += 0.2;
+			Enemy::extraHp += 0.2;
+			timeSinceStart -= difficultyIncreaseInterval;
+		}
+		// Spawn enemy if the interval has passed.
+		if (timeSinceLastSpawn >= spawnInterval) {
+			timeSinceLastSpawn -= spawnInterval;
+			// Randomly select an enemy type to spawn.
+			int enemyType = rand() % 4 + 1; // Assuming 4 types of enemies.
+			const Engine::Point SpawnCoordinate = Engine::Point(spawnPoint.x * BlockSize + BlockSize / 2, spawnPoint.y * BlockSize + BlockSize / 2);
+			Enemy* enemy = nullptr;
+			switch (enemyType) {
+				case 1:
+					enemy = new SoldierEnemy(SpawnCoordinate.x, SpawnCoordinate.y);
+					break;
+				case 2:
+					enemy = new PlaneEnemy(SpawnCoordinate.x, SpawnCoordinate.y);
+					break;
+				case 3:
+					enemy = new TankEnemy(SpawnCoordinate.x, SpawnCoordinate.y);
+					break;
+				case 4:
+					enemy = new boss1(SpawnCoordinate.x, SpawnCoordinate.y);
+					break;
+				// Add cases for more enemy types if needed.
 			}
-			continue;
+			EnemyGroup->AddNewObject(enemy);
+			enemy->UpdatePath(mapDistance);
+			enemy->Update(deltaTime);
+			std::cout << enemy->Position.x << " " << enemy->Position.y << std::endl;
 		}
-		auto current = enemyWaveData.front();
-		if (ticks < current.second)
-			continue;
-		ticks -= current.second;
-		enemyWaveData.pop_front();
-		const Engine::Point SpawnCoordinate = Engine::Point(spawnPoint.x * BlockSize + BlockSize / 2, spawnPoint.y * BlockSize + BlockSize / 2);
-		Enemy* enemy;
-		switch (current.first) {
-		case 1:
-			EnemyGroup->AddNewObject(enemy = new SoldierEnemy(SpawnCoordinate.x, SpawnCoordinate.y));
-			break;
-		case 2:
-			EnemyGroup->AddNewObject(enemy = new PlaneEnemy(SpawnCoordinate.x, SpawnCoordinate.y));
-			break;
-		case 3:
-			EnemyGroup->AddNewObject(enemy = new TankEnemy(SpawnCoordinate.x, SpawnCoordinate.y));
-			break;
-        // TODO:  [CUSTOM-ENEMY]: You need to modify 'Resource/enemy1.txt', or 'Resource/enemy2.txt' to spawn the 4th enemy.
-        //         The format is "[EnemyId] [TimeDelay] [Repeat]".
-        // TODO:  [CUSTOM-ENEMY]: Enable the creation of the enemy.
-		case 4:
-		 	EnemyGroup->AddNewObject(enemy = new boss1(SpawnCoordinate.x, SpawnCoordinate.y));
-			break;
-		default:
-			continue;
-		}
-		enemy->UpdatePath(mapDistance);
-		// Compensate the time lost.
-		enemy->Update(ticks);
 	}
+
 	if (preview) {
 		float halfScreenWidth = 1280 / 2.0;
 		float halfScreenHeight =  832 / 2.0;
