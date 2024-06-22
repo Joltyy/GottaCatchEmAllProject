@@ -34,6 +34,7 @@
 #include "Enemy/Tank2Enemy.hpp"
 #include "Character/Player.hpp"
 #include "Enemy/boss1.hpp"
+#include "Enemy/snorlax.hpp"
 
 bool PlayScene::DebugMode = false;
 const std::vector<Engine::Point> PlayScene::directions = { Engine::Point(-1, 0), Engine::Point(0, -1), Engine::Point(1, 0), Engine::Point(0, 1) };
@@ -229,7 +230,7 @@ void PlayScene::Update(float deltaTime) {
 		Enemy* enemy;
 		switch (current.first) {
 		case 1:
-			EnemyGroup->AddNewObject(enemy = new SoldierEnemy(SpawnCoordinate.x, SpawnCoordinate.y));
+			EnemyGroup->AddNewObject(enemy = new snorlax(SpawnCoordinate.x, SpawnCoordinate.y));
 			break;
 		case 2:
 			EnemyGroup->AddNewObject(enemy = new PlaneEnemy(SpawnCoordinate.x, SpawnCoordinate.y));

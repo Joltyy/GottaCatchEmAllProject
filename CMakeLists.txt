@@ -108,6 +108,8 @@ add_executable(2024_I2P2_TowerDefense_with_answer
         Enemy/boss1.hpp
         Bullet/Skill1.cpp
         Bullet/Skill1.hpp
+        Enemy/snorlax.cpp
+        Enemy/snorlax.hpp
 #        UI/Component/TextInput.cpp
 #        UI/Component/TextInput.hpp
 )
