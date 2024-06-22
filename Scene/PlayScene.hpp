@@ -45,6 +45,10 @@ public:
 	int MapId;
 	float ticks;
 	float deathCountDown;
+	float timeSinceLastSpawn = 0.0f;
+	float timeSinceStart = 0.0f;
+	float difficultyIncreaseInterval = 10.0f;
+	float spawnInterval = 1.0f;
 
 	// // camera
 	// float centerX = 0;

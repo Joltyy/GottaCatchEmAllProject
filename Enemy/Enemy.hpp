@@ -32,5 +32,7 @@ public:
 	void Draw() const override;
 	float knockbackTimer = 0.5f;
 	float knockbacktimerturret = 50.0f;
+	static int extraHp;
+	static int extraDmg;
 };
 #endif // ENEMY_HPP
