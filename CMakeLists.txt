@@ -112,6 +112,8 @@ add_executable(2024_I2P2_TowerDefense_with_answer
         Enemy/snorlax.hpp
         Enemy/zapdos.cpp
         Enemy/zapdos.hpp
+        Enemy/growlithe.cpp
+        Enemy/growlithe.hpp
         #        UI/Component/TextInput.cpp
 #        UI/Component/TextInput.hpp
 )

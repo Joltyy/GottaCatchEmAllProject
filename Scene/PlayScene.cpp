@@ -36,6 +36,7 @@
 #include "Enemy/boss1.hpp"
 #include "Enemy/snorlax.hpp"
 #include "Enemy/zapdos.hpp"
+#include "Enemy/growlithe.hpp"
 
 bool PlayScene::DebugMode = false;
 const std::vector<Engine::Point> PlayScene::directions = { Engine::Point(-1, 0), Engine::Point(0, -1), Engine::Point(1, 0), Engine::Point(0, 1) };
@@ -238,7 +239,7 @@ void PlayScene::Update(float deltaTime) {
 					enemy = new zapdos(SpawnCoordinate.x, SpawnCoordinate.y);
 					break;
 				case 3:
-					enemy = new TankEnemy(SpawnCoordinate.x, SpawnCoordinate.y);
+					enemy = new growlithe(SpawnCoordinate.x, SpawnCoordinate.y);
 					break;
 				case 4:
 					enemy = new boss1(SpawnCoordinate.x, SpawnCoordinate.y);

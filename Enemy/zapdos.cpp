@@ -57,7 +57,7 @@ void zapdos::Draw() const {
     int sourceY = 0; // Assuming all frames are on the same row
 
     // Define the scale factor
-    float scaleFactor = 3.0f; // Change this value to scale the boss
+    float scaleFactor = 2.0f; // Change this value to scale the boss
 
     // Calculate the new position based on the scale factor
     float scaledWidth = frameWidth * scaleFactor;
