@@ -13,7 +13,7 @@
 class Turret;
 
 basebullet::basebullet(Engine::Point position, Engine::Point forwardDirection, float rotation, Turret* parent, int damage) :
-	Bullet("play/pokeball.png", 500, damage, position, forwardDirection, rotation - ALLEGRO_PI / 2, parent) {
+	Bullet("play/pokeball_1.png", 500, damage, position, forwardDirection, rotation - ALLEGRO_PI / 2, parent) {
 }
 void basebullet::OnExplode(Enemy* enemy) {
 	std::random_device dev;
