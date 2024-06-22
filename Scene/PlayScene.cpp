@@ -86,6 +86,7 @@ void PlayScene::Initialize() {
 	keyStrokes.clear();
 	ticks = 0;
 	deathCountDown = -1;
+	wave = 0;
 	lives = 10;
 	money = 300;
 	SpeedMult = 1;
