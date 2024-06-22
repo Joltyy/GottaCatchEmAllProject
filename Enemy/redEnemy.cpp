@@ -2,7 +2,7 @@
 
 #include "redEnemy.hpp"
 
-redEnemy::redEnemy(int x, int y) : Enemy("play/enemy-4.png", x, y, 10, 50, 40 + (40 * extraHp), 200, 100, 10 + (10 * extraDmg), 20) {
+redEnemy::redEnemy(int x, int y) : Enemy("play/enemy-4.png", x, y, 10, 50, (40 * extraHp), 200, 100, (10 * extraDmg), 20) {
     // TODO: [CUSTOM-TOOL] You can imitate the 2 files: 'redEnemy.hpp', 'redEnemy.cpp' to create a new enemy.
 }
 

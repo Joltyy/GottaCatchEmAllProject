@@ -2,7 +2,7 @@
 
 #include "Tank2Enemy.hpp"
 
-Tank2Enemy::Tank2Enemy(int x, int y) : Enemy("play/enemy-5.png", x, y, 10, 60, 8 + (8 * extraHp), 5, 50, 10 + (10 * extraDmg), 10) {
+Tank2Enemy::Tank2Enemy(int x, int y) : Enemy("play/enemy-5.png", x, y, 10, 60, (8 * extraHp), 5, 50, (10 * extraDmg), 10) {
 	// TODO: [CUSTOM-TOOL] You can imitate the 2 files: 'SoldierEnemy.hpp', 'SoldierEnemy.cpp' to create a new enemy.
 }
 

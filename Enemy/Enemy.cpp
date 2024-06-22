@@ -18,8 +18,8 @@
 #include "Scene/PlayScene.hpp"
 #include "Turret/Turret.hpp"
 
-int Enemy::extraHp = 0;
-int Enemy::extraDmg = 0;
+int Enemy::extraHp = 1;
+int Enemy::extraDmg = 1;
 PlayScene* Enemy::getPlayScene() {
 	return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());
 }

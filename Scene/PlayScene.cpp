@@ -84,7 +84,7 @@ void PlayScene::Initialize() {
 	ticks = 0;
 	deathCountDown = -1;
 	lives = 10;
-	money = 150;
+	money = 300;
 	SpeedMult = 1;
 	score = 0;
 	// Add groups from bottom to top.
@@ -202,27 +202,36 @@ void PlayScene::Update(float deltaTime) {
 
 	for(int i = 0; i < SpeedMult; i++){
 		IScene::Update(deltaTime);
-		timeSinceLastSpawn += deltaTime;
 		timeSinceStart += deltaTime;
+
+		if(spawning) timeSinceLastSpawn += deltaTime;
 
 		// Increase difficulty over time.
 		if (timeSinceStart >= difficultyIncreaseInterval) {
 			spawnInterval = std::max(1.0f, spawnInterval - 1.0f); // Decrease spawn interval to a minimum of 0.5 seconds.
 			// Optionally, increase enemy toughness here.
-			Enemy::extraDmg += 0.2;
-			Enemy::extraHp += 0.2;
+			Enemy::extraDmg *= 1.2;
+			Enemy::extraHp *= 1.2;
 			timeSinceStart -= difficultyIncreaseInterval;
+			spawning = false;
 		}
 		// Spawn enemy if the interval has passed.
-		if (timeSinceLastSpawn >= spawnInterval) {
+		if (timeSinceLastSpawn >= spawnInterval && spawning) {
 			timeSinceLastSpawn -= spawnInterval;
 			// Randomly select an enemy type to spawn.
-			int enemyType = rand() % 4 + 1; // Assuming 4 types of enemies.
+			if(timeSinceStart <= 10){
+				randomEnemySelector = 2;
+			} else if (timeSinceStart <= 20){
+				randomEnemySelector = 3;
+			} else if (timeSinceStart <= 30){
+				randomEnemySelector = 4;
+			}
+			int enemyType = rand() % randomEnemySelector + 1; // Assuming 4 types of enemies.
 			const Engine::Point SpawnCoordinate = Engine::Point(spawnPoint.x * BlockSize + BlockSize / 2, spawnPoint.y * BlockSize + BlockSize / 2);
 			Enemy* enemy = nullptr;
 			switch (enemyType) {
 				case 1:
-					enemy = new SoldierEnemy(SpawnCoordinate.x, SpawnCoordinate.y);
+					enemy = new snorlax(SpawnCoordinate.x, SpawnCoordinate.y);
 					break;
 				case 2:
 					enemy = new PlaneEnemy(SpawnCoordinate.x, SpawnCoordinate.y);
@@ -240,6 +249,11 @@ void PlayScene::Update(float deltaTime) {
 			enemy->Update(deltaTime);
 			std::cout << enemy->Position.x << " " << enemy->Position.y << std::endl;
 		}
+	}
+
+	if(!spawning && timeSinceStart >= spawnBreak){
+		timeSinceStart -= spawnBreak;
+		spawning = true;
 	}
 
 	if (preview) {
@@ -571,6 +585,10 @@ void PlayScene::ReadMap() {
 				TileMapGroup->AddNewObject(new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
 			else
 				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+				if(i == MapHeight / 2 && j == MapWidth / 2){
+					TowerGroup->AddNewObject(new MachineGunTurret(j * BlockSize + 32, i * BlockSize + 32));
+					mapState[i][j] = TILE_OCCUPIED;
+				}
 		}
 	}
 }
@@ -707,19 +725,19 @@ void PlayScene::ConstructUI() {
 	machinegunUpgradeButton->Visible = false;
 
 	//LaserUpgradebutton
-	laserUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1384, 220);
+	laserUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1387, 220);
 	laserUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnLaserUpgradeClick, this));
 	UIGroup->AddNewControlObject(laserUpgradeButton);
 	laserUpgradeButton->Visible = false;
 
 	//MissileUpgradebutton
-	missileUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1458, 220);
+	missileUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1462, 220);
 	missileUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnMissileUpgradeClick, this));
 	UIGroup->AddNewControlObject(missileUpgradeButton);
 	missileUpgradeButton->Visible = false;
 
 	//FlameUpgradebutton
-	flameUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1532, 220);
+	flameUpgradeButton = new Engine::ImageButton("play/UpgradeButtonTransparent.png", "play/UpgradeButton.png", 1537, 220);
 	flameUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnFlameUpgradeClick, this));
 	UIGroup->AddNewControlObject(flameUpgradeButton);
 	flameUpgradeButton->Visible = false;
