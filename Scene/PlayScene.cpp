@@ -35,6 +35,7 @@
 #include "Character/Player.hpp"
 #include "Enemy/boss1.hpp"
 #include "Enemy/snorlax.hpp"
+#include "Enemy/zapdos.hpp"
 
 bool PlayScene::DebugMode = false;
 const std::vector<Engine::Point> PlayScene::directions = { Engine::Point(-1, 0), Engine::Point(0, -1), Engine::Point(1, 0), Engine::Point(0, 1) };
@@ -234,7 +235,7 @@ void PlayScene::Update(float deltaTime) {
 					enemy = new snorlax(SpawnCoordinate.x, SpawnCoordinate.y);
 					break;
 				case 2:
-					enemy = new PlaneEnemy(SpawnCoordinate.x, SpawnCoordinate.y);
+					enemy = new zapdos(SpawnCoordinate.x, SpawnCoordinate.y);
 					break;
 				case 3:
 					enemy = new TankEnemy(SpawnCoordinate.x, SpawnCoordinate.y);
@@ -611,7 +612,7 @@ void PlayScene::ConstructUI() {
 	UIGroup->AddNewObject(new Engine::Image("play/sand.png", 1280, 0, 320, 832));
 
 	// Text
-	UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, 1294, 0));
+	UIGroup->AddNewObject(new Engine::Label(std::string("Good Luck"), "pirulen.ttf", 32, 1294, 0));
 	UIGroup->AddNewObject(UIMoney = new Engine::Label(std::string("$") + std::to_string(money), "pirulen.ttf", 24, 1294, 48));
 	UIGroup->AddNewObject(UILives = new Engine::Label(std::string("Life ") + std::to_string(lives), "pirulen.ttf", 24, 1294, 88));
 	UIGroup->AddNewObject(UIScore = new Engine::Label(std::string("Score: ") + std::to_string(score), "pirulen.ttf", 24, 1294, 300));
