@@ -214,8 +214,8 @@ void PlayScene::Update(float deltaTime) {
 		if (timeSinceStart >= difficultyIncreaseInterval) {
 			spawnInterval = std::max(0.3f, spawnInterval - 0.2f); // Decrease spawn interval to a minimum of 0.5 seconds.
 			// Optionally, increase enemy toughness here.
-			Enemy::extraDmg *= 1.1;
-			Enemy::extraHp *= 1.1;
+			Enemy::extraDmg *= 1.2;
+			Enemy::extraHp *= 1.2;
 			timeSinceStart -= difficultyIncreaseInterval;
 			spawning = false;
 			Wave->Text = "Wave: " + std::to_string(++wave);
