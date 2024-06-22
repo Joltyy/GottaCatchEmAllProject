@@ -8,6 +8,7 @@ public:
     base(float x, float y);
 	void CreateBullet() override;
     void OnExplode() override;
+    void Update(float deltaTime) override;
 	static int extraDamage;
 };
 #endif // MACHINEGUNTURRET_HPP

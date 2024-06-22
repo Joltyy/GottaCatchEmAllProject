@@ -32,7 +32,7 @@ public:
     Enemy* Target = nullptr;
     float knockbackDistance = 10.0f;
     Turret(std::string imgBase, std::string imgTurret, float x, float y, float radius, int price, float coolDown, float hp, int damage, float hitbox);
-    void Update(float deltaTime) override;
+    virtual void Update(float deltaTime) override;
     void Draw() const override;
 	int GetPrice() const;
     void Hit(float damage);
