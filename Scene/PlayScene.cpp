@@ -21,6 +21,7 @@
 #include "UI/Component/Label.hpp"
 #include "Turret/LaserTurret.hpp"
 #include "Turret/MachineGunTurret.hpp"
+#include "Turret/base.hpp"
 #include "Turret/MissileTurret.hpp"
 #include "UI/Animation/Plane.hpp"
 #include "Enemy/PlaneEnemy.hpp"
@@ -586,7 +587,7 @@ void PlayScene::ReadMap() {
 			else
 				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
 				if(i == MapHeight / 2 && j == MapWidth / 2){
-					TowerGroup->AddNewObject(new MachineGunTurret(j * BlockSize + 32, i * BlockSize + 32));
+					TowerGroup->AddNewObject(new base(j * BlockSize + 32, i * BlockSize + 32));
 					mapState[i][j] = TILE_OCCUPIED;
 				}
 		}

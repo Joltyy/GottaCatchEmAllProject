@@ -74,6 +74,7 @@
         "ios": "cpp",
         "locale": "cpp",
         "mutex": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "xstring": "cpp"
     }
 }
