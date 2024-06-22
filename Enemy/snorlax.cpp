@@ -11,7 +11,7 @@ ALLEGRO_BITMAP* snorlax_attk_right;
 ALLEGRO_BITMAP* snorlax_attk_up;
 
 snorlax::snorlax(int x, int y)
-    : Enemy("Animations/snorlax_down.png", x, y, 10, 50, 5, 5, 5, 10, 10), frameCount(0) {
+    : Enemy("Animations/snorlax_down.png", x, y, 10, 50, 5 * extraHp, 5, 5, 10 * extraDmg, 10), frameCount(0) {
     // Add the paths of your frame images to the frames vector.
     snorlax_right = al_load_bitmap("Resource/images/Animations/snorlax_right.png");
     snorlax_left = al_load_bitmap("Resource/images/Animations/snorlax_left.png");

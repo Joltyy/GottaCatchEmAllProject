@@ -47,8 +47,11 @@ public:
 	float deathCountDown;
 	float timeSinceLastSpawn = 0.0f;
 	float timeSinceStart = 0.0f;
-	float difficultyIncreaseInterval = 10.0f;
+	float difficultyIncreaseInterval = 30.0f;
 	float spawnInterval = 1.0f;
+	bool spawning = true;
+	float spawnBreak = 5.0f;
+	int randomEnemySelector = 1;
 
 	// // camera
 	// float centerX = 0;
