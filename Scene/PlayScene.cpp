@@ -355,19 +355,19 @@ void PlayScene::Draw() const {
 		missileUpgradeButton->Visible = false;
 	}
 
-	if(money >= 300){
+	if(money >= 350){
 		laserUpgradeButton->Visible = true;
 	} else {
 		laserUpgradeButton->Visible = false;
 	}
 
-	if(money >= 200){
+	if(money >= 300){
 		flameUpgradeButton->Visible = true;
 	} else {
 		flameUpgradeButton->Visible = false;
 	}
 
-	if(money >= 100){
+	if(money >= 200){
 		machinegunUpgradeButton->Visible = true;
 	} else {
 		machinegunUpgradeButton->Visible = false;
@@ -914,13 +914,13 @@ void PlayScene::EarnExp(int exp){
 
 void PlayScene::OnMachineGunUpgradeClick() {
 	if(machinegunUpgradeButton->Visible){
-		if(money > 100){
-			for(auto turret : TowerGroup->GetObjects()){
-				Turret* myturret = dynamic_cast<Turret*>(turret);
-				if(myturret->type == "MachineGun"){
-					std::cout << "upgrade\n";
-					myturret->damage += 2;
-					money -= 100;
+		if(money >= 200){
+			MachineGunTurret::extraDamage += 1;
+			EarnMoney(-200);
+			for(auto& it : TowerGroup->GetObjects()){
+				Turret* myturret = dynamic_cast<Turret*>(it);
+				if(myturret && myturret->type == "MachineGun"){
+					myturret->damage += 1;
 				}
 			}
 		}
@@ -929,11 +929,13 @@ void PlayScene::OnMachineGunUpgradeClick() {
 
 void PlayScene::OnLaserUpgradeClick() {
 	if(laserUpgradeButton->Visible){
-		if(money > 300){
-			for(auto turret : TowerGroup->GetObjects()){
-				if(dynamic_cast<Turret*>(turret)->type == "Laser"){
-					dynamic_cast<LaserTurret*>(turret)->damage += 2;
-					money -= 300;
+		if(money >= 350){
+			LaserTurret::extraDamage += 2;
+			EarnMoney(-350);
+			for(auto& it : TowerGroup->GetObjects()){
+				Turret* myturret = dynamic_cast<Turret*>(it);
+				if(myturret && myturret->type == "Laser"){
+					myturret->damage += 2;
 				}
 			}
 		}
@@ -942,11 +944,13 @@ void PlayScene::OnLaserUpgradeClick() {
 
 void PlayScene::OnMissileUpgradeClick() {
 	if(missileUpgradeButton->Visible){
-		if(money > 400){
-			for(auto turret : TowerGroup->GetObjects()){
-				if(dynamic_cast<Turret*>(turret)->type == "Missile"){
-					dynamic_cast<MissileTurret*>(turret)->damage *= 1.5;
-					money -= 400;
+		if(money >= 400){
+			MissileTurret::extraDamage += 4;
+			EarnMoney(-400);
+			for(auto& it : TowerGroup->GetObjects()){
+				Turret* myturret = dynamic_cast<Turret*>(it);
+				if(myturret && myturret->type == "Missile"){
+					myturret->damage += 4;
 				}
 			}
 		}
@@ -955,11 +959,13 @@ void PlayScene::OnMissileUpgradeClick() {
 
 void PlayScene::OnFlameUpgradeClick() {
 	if(flameUpgradeButton->Visible){
-		if(money > 200){
-			for(auto turret : TowerGroup->GetObjects()){
-				if(dynamic_cast<Turret*>(turret)->type == "Flame"){
-					dynamic_cast<FlameTurret*>(turret)->damage += 1;
-					money -= 200;
+		if(money >= 300){
+			FlameTurret::extraDamage += 1;
+			EarnMoney(-300);
+			for(auto& it : TowerGroup->GetObjects()){
+				Turret* myturret = dynamic_cast<Turret*>(it);
+				if(myturret && myturret->type == "Flame"){
+					myturret->damage += 1;
 				}
 			}
 		}

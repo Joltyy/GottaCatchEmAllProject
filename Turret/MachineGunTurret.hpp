@@ -7,5 +7,6 @@ public:
 	static const int Price;
     MachineGunTurret(float x, float y);
 	void CreateBullet() override;
+	static int extraDamage;
 };
 #endif // MACHINEGUNTURRET_HPP
