@@ -36,6 +36,7 @@
 #include "Character/Player.hpp"
 #include "Enemy/boss1.hpp"
 #include "Enemy/snorlax.hpp"
+#include "Enemy/zapdos.hpp"
 
 bool PlayScene::DebugMode = false;
 const std::vector<Engine::Point> PlayScene::directions = { Engine::Point(-1, 0), Engine::Point(0, -1), Engine::Point(1, 0), Engine::Point(0, 1) };
@@ -209,12 +210,13 @@ void PlayScene::Update(float deltaTime) {
 
 		// Increase difficulty over time.
 		if (timeSinceStart >= difficultyIncreaseInterval) {
-			spawnInterval = std::max(1.0f, spawnInterval - 1.0f); // Decrease spawn interval to a minimum of 0.5 seconds.
+			spawnInterval = std::max(0.3f, spawnInterval - 0.2f); // Decrease spawn interval to a minimum of 0.5 seconds.
 			// Optionally, increase enemy toughness here.
-			Enemy::extraDmg *= 1.2;
-			Enemy::extraHp *= 1.2;
+			Enemy::extraDmg *= 1.1;
+			Enemy::extraHp *= 1.1;
 			timeSinceStart -= difficultyIncreaseInterval;
 			spawning = false;
+			Wave->Text = "Wave: " + std::to_string(++wave);
 		}
 		// Spawn enemy if the interval has passed.
 		if (timeSinceLastSpawn >= spawnInterval && spawning) {
@@ -235,7 +237,7 @@ void PlayScene::Update(float deltaTime) {
 					enemy = new snorlax(SpawnCoordinate.x, SpawnCoordinate.y);
 					break;
 				case 2:
-					enemy = new PlaneEnemy(SpawnCoordinate.x, SpawnCoordinate.y);
+					enemy = new zapdos(SpawnCoordinate.x, SpawnCoordinate.y);
 					break;
 				case 3:
 					enemy = new TankEnemy(SpawnCoordinate.x, SpawnCoordinate.y);
@@ -248,7 +250,7 @@ void PlayScene::Update(float deltaTime) {
 			EnemyGroup->AddNewObject(enemy);
 			enemy->UpdatePath(mapDistance);
 			enemy->Update(deltaTime);
-			std::cout << enemy->Position.x << " " << enemy->Position.y << std::endl;
+			std::cout << Enemy::extraHp << std::endl;
 		}
 	}
 
@@ -612,7 +614,7 @@ void PlayScene::ConstructUI() {
 	UIGroup->AddNewObject(new Engine::Image("play/sand.png", 1280, 0, 320, 832));
 
 	// Text
-	UIGroup->AddNewObject(new Engine::Label(std::string("Stage ") + std::to_string(MapId), "pirulen.ttf", 32, 1294, 0));
+	UIGroup->AddNewObject(new Engine::Label(std::string("Good Luck"), "pirulen.ttf", 32, 1294, 0));
 	UIGroup->AddNewObject(UIMoney = new Engine::Label(std::string("$") + std::to_string(money), "pirulen.ttf", 24, 1294, 48));
 	UIGroup->AddNewObject(UILives = new Engine::Label(std::string("Life ") + std::to_string(lives), "pirulen.ttf", 24, 1294, 88));
 	UIGroup->AddNewObject(UIScore = new Engine::Label(std::string("Score: ") + std::to_string(score), "pirulen.ttf", 24, 1294, 300));
@@ -742,6 +744,10 @@ void PlayScene::ConstructUI() {
 	flameUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnFlameUpgradeClick, this));
 	UIGroup->AddNewControlObject(flameUpgradeButton);
 	flameUpgradeButton->Visible = false;
+
+	//Wave label
+	Wave = new Engine::Label("Wave " + std::to_string(++wave), "pirulen.ttf", 32, 530, 20);
+	UIGroup->AddNewObject(Wave);
 }
 
 void PlayScene::UIBtnClicked(int id) {

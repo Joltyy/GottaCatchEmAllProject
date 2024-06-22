@@ -20,11 +20,6 @@ namespace Engine {
 
 class PlayScene final : public Engine::IScene {
 private:
-	enum TileType {
-		TILE_DIRT,
-		TILE_FLOOR,
-		TILE_OCCUPIED,
-	};
 	ALLEGRO_SAMPLE_ID bgmId;
 	std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> deathBGMInstance;
 protected:
@@ -33,6 +28,11 @@ protected:
 	int SpeedMult;
 	int score;
 public:
+	enum TileType {
+		TILE_DIRT,
+		TILE_FLOOR,
+		TILE_OCCUPIED,
+	};
 	static bool DebugMode;
 	static const std::vector<Engine::Point> directions;
 	static const int MapWidth, MapHeight;
@@ -48,10 +48,13 @@ public:
 	float timeSinceLastSpawn = 0.0f;
 	float timeSinceStart = 0.0f;
 	float difficultyIncreaseInterval = 30.0f;
-	float spawnInterval = 1.0f;
+	float spawnInterval = 3.0f;
 	bool spawning = true;
 	float spawnBreak = 5.0f;
 	int randomEnemySelector = 1;
+	int wave = 0;
+
+
 
 	// // camera
 	// float centerX = 0;
@@ -82,6 +85,7 @@ public:
 	Engine::Label* playerStrength;
 	Engine::Label* playerIntelligence;
 	Engine::Label* playerEndurance;
+	Engine::Label* Wave;
 
 	//skill1 stats
 	Engine::Label* Skill1LevelLabel;

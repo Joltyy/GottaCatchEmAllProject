@@ -54,8 +54,8 @@ void Turret::Hit(float damage) {
 	hp -= damage;
 	if (hp <= 0) {
 		OnExplode();
-		getPlayScene()->EnemyGroup->RemoveObject(objectIterator);
-		
+		getPlayScene()->TowerGroup->RemoveObject(objectIterator);
+		getPlayScene()->mapState[(this->Position.y - 32) / 64][(this->Position.x - 32) / 64] = getPlayScene()->TILE_DIRT;
 		AudioHelper::PlayAudio("explosion.wav");
 	}
 }

@@ -18,8 +18,8 @@
 #include "Scene/PlayScene.hpp"
 #include "Turret/Turret.hpp"
 
-int Enemy::extraHp = 1;
-int Enemy::extraDmg = 1;
+float Enemy::extraHp = 1;
+float Enemy::extraDmg = 1;
 PlayScene* Enemy::getPlayScene() {
 	return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());
 }
@@ -67,7 +67,7 @@ void Enemy::UpdatePath(const std::vector<std::vector<int>>& mapDistance) {
 	int num = mapDistance[y][x];
 	if (num == -1) {
 		num = 0;
-		Engine::LOG(Engine::ERROR) << "Enemy path finding error";
+		// Engine::LOG(Engine::ERROR) << "Enemy path finding error";
 	}
 	path = std::vector<Engine::Point>(num + 1);
 	while (num != 0) {
