@@ -48,10 +48,13 @@ public:
 	float timeSinceLastSpawn = 0.0f;
 	float timeSinceStart = 0.0f;
 	float difficultyIncreaseInterval = 30.0f;
-	float spawnInterval = 1.0f;
+	float spawnInterval = 3.0f;
 	bool spawning = true;
 	float spawnBreak = 5.0f;
 	int randomEnemySelector = 1;
+	int wave = 0;
+
+
 
 	// // camera
 	// float centerX = 0;
@@ -82,6 +85,7 @@ public:
 	Engine::Label* playerStrength;
 	Engine::Label* playerIntelligence;
 	Engine::Label* playerEndurance;
+	Engine::Label* Wave;
 
 	//skill1 stats
 	Engine::Label* Skill1LevelLabel;
