@@ -7,5 +7,6 @@ public:
 	static const int Price;
     FlameTurret(float x, float y);
     void CreateBullet() override;
+    static int extraDamage;
 };
 #endif // FLAMETURRET_HPP
