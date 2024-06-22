@@ -110,6 +110,12 @@ add_executable(2024_I2P2_TowerDefense_with_answer
         Bullet/Skill1.hpp
         Enemy/snorlax.cpp
         Enemy/snorlax.hpp
+        Turret/base.cpp
+        Turret/base.hpp 
+        Bullet/basebullet.cpp
+        Bullet/basebullet.hpp
+        # Turret/baseturret.cpp
+        # Turret/baseturret.hpp
         Enemy/zapdos.cpp
         Enemy/zapdos.hpp
         Enemy/growlithe.cpp

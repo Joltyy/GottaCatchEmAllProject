@@ -21,6 +21,7 @@
 #include "UI/Component/Label.hpp"
 #include "Turret/LaserTurret.hpp"
 #include "Turret/MachineGunTurret.hpp"
+#include "Turret/base.hpp"
 #include "Turret/MissileTurret.hpp"
 #include "UI/Animation/Plane.hpp"
 #include "Enemy/PlaneEnemy.hpp"
@@ -210,12 +211,13 @@ void PlayScene::Update(float deltaTime) {
 
 		// Increase difficulty over time.
 		if (timeSinceStart >= difficultyIncreaseInterval) {
-			spawnInterval = std::max(1.0f, spawnInterval - 1.0f); // Decrease spawn interval to a minimum of 0.5 seconds.
+			spawnInterval = std::max(0.3f, spawnInterval - 0.2f); // Decrease spawn interval to a minimum of 0.5 seconds.
 			// Optionally, increase enemy toughness here.
-			Enemy::extraDmg *= 1.2;
-			Enemy::extraHp *= 1.2;
+			Enemy::extraDmg *= 1.1;
+			Enemy::extraHp *= 1.1;
 			timeSinceStart -= difficultyIncreaseInterval;
 			spawning = false;
+			Wave->Text = "Wave: " + std::to_string(++wave);
 		}
 		// Spawn enemy if the interval has passed.
 		if (timeSinceLastSpawn >= spawnInterval && spawning) {
@@ -249,7 +251,7 @@ void PlayScene::Update(float deltaTime) {
 			EnemyGroup->AddNewObject(enemy);
 			enemy->UpdatePath(mapDistance);
 			enemy->Update(deltaTime);
-			std::cout << enemy->Position.x << " " << enemy->Position.y << std::endl;
+			std::cout << Enemy::extraHp << std::endl;
 		}
 	}
 
@@ -588,7 +590,7 @@ void PlayScene::ReadMap() {
 			else
 				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
 				if(i == MapHeight / 2 && j == MapWidth / 2){
-					TowerGroup->AddNewObject(new MachineGunTurret(j * BlockSize + 32, i * BlockSize + 32));
+					TowerGroup->AddNewObject(new base(j * BlockSize + 32, i * BlockSize + 32));
 					mapState[i][j] = TILE_OCCUPIED;
 				}
 		}
@@ -743,6 +745,10 @@ void PlayScene::ConstructUI() {
 	flameUpgradeButton->SetOnClickCallback(std::bind(&PlayScene::OnFlameUpgradeClick, this));
 	UIGroup->AddNewControlObject(flameUpgradeButton);
 	flameUpgradeButton->Visible = false;
+
+	//Wave label
+	Wave = new Engine::Label("Wave " + std::to_string(++wave), "pirulen.ttf", 32, 530, 20);
+	UIGroup->AddNewObject(Wave);
 }
 
 void PlayScene::UIBtnClicked(int id) {
