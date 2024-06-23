@@ -555,7 +555,7 @@ int PlayScene::GetMoney() const {
 void PlayScene::EarnMoney(int money) {
 	int before = this->money;
 	this->money += money;
-	if (before < this->money) score += money / 5; //if kill then score update
+	if (before < this->money) score += money / 5; //if kill then score update`
 
 	UIMoney->Text = std::string("$") + std::to_string(this->money);
 	UIScore->Text = std::string("Score: ") + std::to_string(score);
