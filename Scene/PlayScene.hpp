@@ -23,11 +23,11 @@ private:
 	ALLEGRO_SAMPLE_ID bgmId;
 	std::shared_ptr<ALLEGRO_SAMPLE_INSTANCE> deathBGMInstance;
 protected:
-	int money;
 	int SpeedMult;
 	int score;
 public:
 	int lives;
+	int money;
 	enum TileType {
 		TILE_DIRT,
 		TILE_FLOOR,

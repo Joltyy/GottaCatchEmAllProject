@@ -120,6 +120,10 @@ add_executable(2024_I2P2_TowerDefense_with_answer
         Enemy/zapdos.hpp
         Enemy/growlithe.cpp
         Enemy/growlithe.hpp
+        Turret/stone.cpp
+        Turret/stone.hpp 
+        Turret/bush.cpp
+        Turret/bush.hpp 
         #        UI/Component/TextInput.cpp
 #        UI/Component/TextInput.hpp
 )

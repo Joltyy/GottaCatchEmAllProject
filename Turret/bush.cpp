@@ -1,0 +1,23 @@
+#include <allegro5/base.h>
+#include <cmath>
+#include <string>
+
+#include "Engine/AudioHelper.hpp"
+#include "Bullet/FireBullet.hpp"
+#include "Engine/Group.hpp"
+#include "bush.hpp"
+#include "Scene/PlayScene.hpp"
+#include "Engine/Point.hpp"
+
+const int bush::Price = 50;
+int bush::extraDamage = 0;
+bush::bush(float x, float y) :
+	// TODO: [CUSTOM-TOOL] You can imitate the 2 files: 'MachineGunTurret.hpp', 'MachineGunTurret.cpp' to create a new turret.
+	Turret("play/bush_22.png", "play/transparent.png", x, y, 200, Price, 0.5, 10000000000, 1 + extraDamage, 35) {
+	// Move center downward, since we the turret head is slightly biased upward.
+	Anchor.y += 8.0f / GetBitmapHeight();
+	type = "MachineGun";
+}
+void bush::CreateBullet() {
+    return;
+}

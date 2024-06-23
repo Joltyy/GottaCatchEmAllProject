@@ -195,6 +195,31 @@ void Player::CheckAttackCollision() {
                 std::cout << "One or both direction vectors are zero vectors." << std::endl;
             }
         }
+        for(auto it : scene->TowerGroup->GetObjects()){
+            Turret* object = dynamic_cast<Turret*>(it);
+            if(object != nullptr){
+                Engine::Point directionToEnemy = (object->Position - Engine::Point{48, 48}) - position;
+                float distanceToEnemy = directionToEnemy.Magnitude();
+                Engine::Point directionToEnemyNormalized = directionToEnemy.Normalize();
+                Engine::Point prevBitmapDirectionNormalized = prevBitmapDirection.Normalize();
+                if (directionToEnemy.Magnitude() > 0 && prevBitmapDirection.Magnitude() > 0) {
+                    float dot = directionToEnemyNormalized.Dot(prevBitmapDirectionNormalized);
+                    dot = std::max(-1.0f, std::min(1.0f, dot));
+                    angle = acos(dot) * (180.0f / M_PI); // Convert radians to degrees
+                    const float angleTolerance = 0.5f;
+                    if (std::abs(prevAngle - angle) <= angleTolerance) {
+                        angle = prevAngle;
+                    }
+                    prevAngle = angle;
+                    if (angle <= attackConeAngle && distanceToEnemy <= attackRange) {
+                        scene->money += 1;
+                        scene->EarnMoney(0);
+                    }
+                } else {
+                    std::cout << "One or both direction vectors are zero vectors." << std::endl;
+                }
+            }
+        }
         attackCollisonChecked = true;
     }
     }
