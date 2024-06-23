@@ -585,15 +585,24 @@ void PlayScene::ReadMap() {
 	for (int i = 0; i < MapHeight; i++) {
 		for (int j = 0; j < MapWidth; j++) {
 			const int num = mapData[i * MapWidth + j];
-			mapState[i][j] = num ? TILE_FLOOR : TILE_DIRT;
-			if (num)
-				TileMapGroup->AddNewObject(new Engine::Image("play/floor.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
-			else
+			if(num == 0){
+				mapState[i][j] = TILE_DIRT;
+			} else {
+				mapState[i][j] = TILE_OCCUPIED;
+			}
+			if (num == 1)
+			{
+				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+				TileMapGroup->AddNewObject(new Engine::Image("play/stone.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+			}
+			else {
 				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
 				if(i == MapHeight / 2 && j == MapWidth / 2){
 					TowerGroup->AddNewObject(new base(j * BlockSize + 32, i * BlockSize + 32));
 					mapState[i][j] = TILE_OCCUPIED;
+			
 				}
+			}
 		}
 	}
 }
