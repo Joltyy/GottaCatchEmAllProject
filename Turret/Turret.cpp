@@ -57,7 +57,7 @@ void Turret::Hit(float damage) {
 	hp -= damage;
 	if(this->type == "baseturret"){
 		getPlayScene()->lives -= damage;
-		std::cout << getPlayScene()->lives << std::endl;
+		if(getPlayScene()->lives < 0) getPlayScene()->lives = 0;
 	}
 	if (hp <= 0) {
 		OnExplode();
