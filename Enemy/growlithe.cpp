@@ -21,18 +21,27 @@ growlithe::growlithe(int x, int y)
 
 
 void growlithe::Update(float deltaTime) {
-    static float frameTimer = 0;
-    frameTimer += deltaTime;
-    if (frameTimer >= 0.5f) { // 1 second delay
-        frameTimer = 0;
-        if (++frameCount >= 3) { // Assuming 2 frames
-            frameCount = 0;
-        }
-    }
     if (Velocity.x > 0) direction = 0; // Moving right
     else if (Velocity.x < 0) direction = 1; // Moving left
     else if (Velocity.y < 0) direction = 2; // Moving up
     else if (Velocity.y > 0) direction = 3; // Moving down
+
+    static float frameTimer = 0;
+    frameTimer += deltaTime;
+    if (frameTimer >= 0.5f) { // 1 second delay
+        frameTimer = 0;
+        if(direction == 3 || direction == 2) {
+            if (++frameCount >= 2) { // Assuming 2 frames
+                frameCount = 0;
+            }
+        }
+        else {
+            if (++frameCount >= 3) { // Assuming 2 frames
+                frameCount = 0;
+            }
+        }
+    }
+    
 
     Enemy::Update(deltaTime);
 }

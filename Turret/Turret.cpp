@@ -5,6 +5,7 @@
 #include <random>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "Enemy/Enemy.hpp"
 #include "Engine/GameEngine.hpp"
@@ -26,6 +27,8 @@
 #include "Turret/Turret.hpp"
 #include "Enemy/boss1.hpp"
 
+
+float Turret::extraHp = 1;
 PlayScene* Turret::getPlayScene() {
 	return dynamic_cast<PlayScene*>(Engine::GameEngine::GetInstance().GetActiveScene());
 }
@@ -52,6 +55,10 @@ void Turret::Hit(float damage) {
 	//std::cout << damage << std::endl;
 
 	hp -= damage;
+	if(this->type == "baseturret"){
+		getPlayScene()->lives -= damage;
+		if(getPlayScene()->lives < 0) getPlayScene()->lives = 0;
+	}
 	if (hp <= 0) {
 		OnExplode();
 		getPlayScene()->TowerGroup->RemoveObject(objectIterator);

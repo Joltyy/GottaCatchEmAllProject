@@ -26,6 +26,7 @@ protected:
     virtual void CreateBullet() = 0;
     virtual void OnExplode();   // new
 public:
+    void Hit(float damage);
     int damage;
     bool Enabled = true;
     bool Preview = false;
@@ -35,7 +36,8 @@ public:
     virtual void Update(float deltaTime) override;
     void Draw() const override;
 	int GetPrice() const;
-    virtual void Hit(float damage);
+    void Hit(float damage);
     std::string type = "";
+    static float extraHp;
 };
 #endif // TURRET_HPP
