@@ -120,7 +120,7 @@ void PlayScene::Initialize() {
 	}
 	else if (MapId == 2)
 	{
-		bgmId = AudioHelper::PlayBGM("battle2.ogg");
+		bgmId = AudioHelper::PlayBGM("battle.wav");
 	}
 
     // Add top and bottom edge points
