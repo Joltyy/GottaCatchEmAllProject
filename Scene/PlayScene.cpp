@@ -22,6 +22,8 @@
 #include "Turret/LaserTurret.hpp"
 #include "Turret/MachineGunTurret.hpp"
 #include "Turret/base.hpp"
+#include "Turret/stone.hpp"
+#include "Turret/bush.hpp"
 #include "Turret/MissileTurret.hpp"
 #include "UI/Animation/Plane.hpp"
 #include "Enemy/PlaneEnemy.hpp"
@@ -594,7 +596,7 @@ void PlayScene::ReadMap() {
 			if (num == 1)
 			{
 				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
-				TileMapGroup->AddNewObject(new Engine::Image("play/stone.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+				TowerGroup->AddNewObject(new stone(j * BlockSize + 32, i * BlockSize + 32));
 			}
 			else if (num == 0){
 				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
@@ -605,7 +607,7 @@ void PlayScene::ReadMap() {
 				}
 			} else if (num == 2){
 				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
-				TileMapGroup->AddNewObject(new Engine::Image("play/bush.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+				TowerGroup->AddNewObject(new bush(j * BlockSize+32, i * BlockSize+32));
 			}
 		}
 	}
