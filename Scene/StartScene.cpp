@@ -50,7 +50,7 @@ void StartScene::Initialize() {
     //     isBGMStarted = true;
     // }
     
-    bgmId = AudioHelper::PlayBGM("main_menu.ogg");
+    bgmId = AudioHelper::PlayBGM("main.ogg");
 }
 void StartScene::Terminate() {
     AudioHelper::StopBGM(bgmId);
