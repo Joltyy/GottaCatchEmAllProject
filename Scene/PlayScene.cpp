@@ -87,7 +87,7 @@ void PlayScene::Initialize() {
 	ticks = 0;
 	deathCountDown = -1;
 	wave = 0;
-	lives = 10;
+	lives = base::Hp;
 	money = 300;
 	SpeedMult = 1;
 	score = 0;
@@ -156,6 +156,7 @@ void PlayScene::Terminate() {
 }
 
 void PlayScene::Update(float deltaTime) {
+	UILives->Text = std::string("BaseHp ") + std::to_string(lives);
 	// When spawning a new enemy, select a random spawn point
 	int spawnIndex = rand() % PlayScene::SpawnGridPoints.size();
 	Engine::Point spawnPoint = PlayScene::SpawnGridPoints[spawnIndex];
@@ -275,7 +276,6 @@ void PlayScene::Update(float deltaTime) {
 		preview->Update(deltaTime);
 	}
 	player->Update(deltaTime);
-
 	float halfScreenWidth = 1280 / 2.0;
 	float halfScreenHeight =  832 / 2.0;
 	float desiredCenterX = -(player->position.x + 64) + halfScreenWidth;
@@ -542,7 +542,7 @@ void PlayScene::OnKeyUp(int keyCode) {
 
 void PlayScene::Hit() {
 	lives--;
-	UILives->Text = std::string("Life ") + std::to_string(lives);
+	UILives->Text = std::string("BaseHp ") + std::to_string(lives);
 	if (lives <= 0) {
 		Engine::GameEngine::GetInstance().ChangeScene("lose-scene");
 	}
@@ -601,7 +601,6 @@ void PlayScene::ReadMap() {
 				if(i == MapHeight / 2 && j == MapWidth / 2){
 					TowerGroup->AddNewObject(new base(j * BlockSize + 32, i * BlockSize + 32));
 					mapState[i][j] = TILE_OCCUPIED;
-			
 				}
 			} else if (num == 2){
 				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
@@ -631,7 +630,7 @@ void PlayScene::ConstructUI() {
 	// Text
 	UIGroup->AddNewObject(new Engine::Label(std::string("Good Luck"), "pirulen.ttf", 32, 1294, 0));
 	UIGroup->AddNewObject(UIMoney = new Engine::Label(std::string("$") + std::to_string(money), "pirulen.ttf", 24, 1294, 48));
-	UIGroup->AddNewObject(UILives = new Engine::Label(std::string("Life ") + std::to_string(lives), "pirulen.ttf", 24, 1294, 88));
+	UIGroup->AddNewObject(UILives = new Engine::Label(std::string("BaseHp ") + std::to_string(lives), "pirulen.ttf", 24, 1294, 88));
 	UIGroup->AddNewObject(UIScore = new Engine::Label(std::string("Score: ") + std::to_string(score), "pirulen.ttf", 24, 1294, 300));
 	TurretButton* btn;
 
@@ -948,11 +947,13 @@ void PlayScene::OnMachineGunUpgradeClick() {
 	if(machinegunUpgradeButton->Visible){
 		if(money >= 200){
 			MachineGunTurret::extraDamage += 1;
+			MachineGunTurret::extraHp *= 1.05;
 			EarnMoney(-200);
 			for(auto& it : TowerGroup->GetObjects()){
 				Turret* myturret = dynamic_cast<Turret*>(it);
 				if(myturret && myturret->type == "MachineGun"){
 					myturret->damage += 1;
+					myturret->extraHp *= 1.05;
 				}
 			}
 		}
@@ -963,11 +964,13 @@ void PlayScene::OnLaserUpgradeClick() {
 	if(laserUpgradeButton->Visible){
 		if(money >= 350){
 			LaserTurret::extraDamage += 2;
+			LaserTurret::extraHp *= 1.05;
 			EarnMoney(-350);
 			for(auto& it : TowerGroup->GetObjects()){
 				Turret* myturret = dynamic_cast<Turret*>(it);
 				if(myturret && myturret->type == "Laser"){
 					myturret->damage += 2;
+					myturret->extraHp *= 1.05;
 				}
 			}
 		}
@@ -978,11 +981,13 @@ void PlayScene::OnMissileUpgradeClick() {
 	if(missileUpgradeButton->Visible){
 		if(money >= 400){
 			MissileTurret::extraDamage += 4;
+			MissileTurret::extraHp *= 1.15;
 			EarnMoney(-400);
 			for(auto& it : TowerGroup->GetObjects()){
 				Turret* myturret = dynamic_cast<Turret*>(it);
 				if(myturret && myturret->type == "Missile"){
 					myturret->damage += 4;
+					myturret->extraHp *= 1.05;
 				}
 			}
 		}
@@ -993,11 +998,13 @@ void PlayScene::OnFlameUpgradeClick() {
 	if(flameUpgradeButton->Visible){
 		if(money >= 300){
 			FlameTurret::extraDamage += 1;
+			FlameTurret::extraHp *= 1.15;
 			EarnMoney(-300);
 			for(auto& it : TowerGroup->GetObjects()){
 				Turret* myturret = dynamic_cast<Turret*>(it);
 				if(myturret && myturret->type == "Flame"){
 					myturret->damage += 1;
+					myturret->extraHp *= 1.05;
 				}
 			}
 		}

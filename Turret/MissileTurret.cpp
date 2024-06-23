@@ -12,7 +12,7 @@
 const int MissileTurret::Price = 300;
 int MissileTurret::extraDamage = 0;
 MissileTurret::MissileTurret(float x, float y) :
-	Turret("play/tower-base.png", "play/turret-3.png", x, y, 1000, Price, 4, 100, 4 + extraDamage, 35) {
+	Turret("play/tower-base.png", "play/turret-3.png", x, y, 1000, Price, 4, 100 * extraHp, 4 + extraDamage, 35) {
 	type = "Missile";
 }
 void MissileTurret::CreateBullet() {

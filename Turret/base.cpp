@@ -1,6 +1,7 @@
 #include <allegro5/base.h>
 #include <cmath>
 #include <string>
+#include <iostream>
 
 #include "Engine/AudioHelper.hpp"
 #include "Bullet/FireBullet.hpp"
@@ -13,9 +14,10 @@
 
 const int base::Price = 50;
 int base::extraDamage = 0;
+int base::Hp = 5000;
 base::base(float x, float y) :
 	// TODO: [CUSTOM-TOOL] You can imitate the 2 files: 'MachineGunTurret.hpp', 'MachineGunTurret.cpp' to create a new turret.
-	Turret("play/Pokémon_Center_RSE.png", "play/transparent.png", x, y, 200, Price, 0.5, 1000, 20, 35) {
+	Turret("play/Pokémon_Center_RSE.png", "play/transparent.png", x, y, 200, Price, 0.5, Hp, 20, 35) {
 	// Move center downward, since we the turret head is slightly biased upward.
 	Anchor.y += 8.0f / GetBitmapHeight();
 	type = "baseturret";
