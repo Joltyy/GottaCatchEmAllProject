@@ -21,9 +21,3 @@ stone::stone(float x, float y) :
 void stone::CreateBullet() {
     return;
 }
-void stone::Hit(float damage) {
-	//std::cout << hp << std::endl;
-	//std::cout << damage << std::endl;
-
-	hp -= damage;
-}

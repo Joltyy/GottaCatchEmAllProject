@@ -36,7 +36,6 @@ public:
     virtual void Update(float deltaTime) override;
     void Draw() const override;
 	int GetPrice() const;
-    void Hit(float damage);
     std::string type = "";
     static float extraHp;
 };

@@ -8,6 +8,5 @@ public:
     stone(float x, float y);
 	static int extraDamage;
 	void CreateBullet() override;
-	void Hit(float damage) override;
 };
 #endif // MACHINEGUNTURRET_HPP
