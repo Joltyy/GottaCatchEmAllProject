@@ -37,7 +37,7 @@ void ScoreboardScene::Initialize() {
 	AddNewControlObject(btn);
 	AddNewObject(new Engine::Label("Back", "pirulen.ttf", 48, halfW, halfH * 7 / 4, 0, 0, 0, 255, 0.5, 0.5));
 
-    bgmInstance = AudioHelper::PlaySample("credit.ogg", true, AudioHelper::BGMVolume);
+    bgmInstance = AudioHelper::PlaySample("main.ogg", true, AudioHelper::BGMVolume);
 
 	std::ifstream fin("Resource/scoreboard.txt");
 	std::string line;
