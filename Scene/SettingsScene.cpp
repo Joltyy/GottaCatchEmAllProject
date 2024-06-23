@@ -19,7 +19,7 @@ void SettingsScene::Initialize() {
 
     Engine::ImageButton *btn;
     //bg
-    Engine::Image* background = new Engine::Image("stage-select/bg_blur.png", 0, 0, w, h);
+    Engine::Image* background = new Engine::Image("stage-select/snorlax.png", 0, 0, w, h);
     AddNewObject(background);
 
     //back

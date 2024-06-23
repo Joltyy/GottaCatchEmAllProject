@@ -27,7 +27,7 @@ void ScoreboardScene::Initialize() {
 	int halfW = w / 2;
 	int halfH = h / 2;
 	//bg
-    Engine::Image* background = new Engine::Image("stage-select/bg_blur.png", 0, 0, w, h);
+    Engine::Image* background = new Engine::Image("stage-select/snorlax.png", 0, 0, w, h);
     AddNewObject(background);
 
 	AddNewObject(new Engine::Label("scoreboard", "pirulen.ttf", 60, halfW, 50, 250, 7, 100, 255, 0.5, 0.5));
