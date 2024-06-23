@@ -562,12 +562,13 @@ void PlayScene::ReadMap() {
 	std::string filename = std::string("Resource/map") + std::to_string(MapId) + ".txt";
 	// Read map file.
 	char c;
-	std::vector<bool> mapData;
+	std::vector<int> mapData;
 	std::ifstream fin(filename);
 	while (fin >> c) {
 		switch (c) {
-		case '0': mapData.push_back(false); break;
-		case '1': mapData.push_back(true); break;
+		case '0': mapData.push_back(0); break;
+		case '1': mapData.push_back(1); break;
+		case '2': mapData.push_back(2); break;
 		case '\n':
 		case '\r':
 			if (static_cast<int>(mapData.size()) / MapWidth != 0)
@@ -595,13 +596,16 @@ void PlayScene::ReadMap() {
 				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
 				TileMapGroup->AddNewObject(new Engine::Image("play/stone.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
 			}
-			else {
+			else if (num == 0){
 				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
 				if(i == MapHeight / 2 && j == MapWidth / 2){
 					TowerGroup->AddNewObject(new base(j * BlockSize + 32, i * BlockSize + 32));
 					mapState[i][j] = TILE_OCCUPIED;
 			
 				}
+			} else if (num == 2){
+				TileMapGroup->AddNewObject(new Engine::Image("play/dirt.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
+				TileMapGroup->AddNewObject(new Engine::Image("play/bush.png", j * BlockSize, i * BlockSize, BlockSize, BlockSize));
 			}
 		}
 	}
