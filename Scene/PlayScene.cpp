@@ -76,6 +76,10 @@ ALLEGRO_BITMAP* PlayerImageAttackRight;
 ALLEGRO_BITMAP* Skill1Image;
 
 void PlayScene::Initialize() {
+	Turret::extraHp = 1;
+	Enemy::extraDmg = 1;
+	Enemy::extraHp = 1;
+	spawnInterval = 3.0f;
 	Skill1Image = al_load_bitmap("Resource/images/play/Skill1.png");
 	PlayerImage = al_load_bitmap("Resource/images/Animations/Player_Down_Walk.png");
 	PlayerImageAttack = al_load_bitmap("Resource/images/Animations/Player_Down_Attack.png");
